@@ -14,10 +14,16 @@
   "license": "ISC",
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^8.2.0",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
     "express": "^5.2.1",
-    "swagger-ui-express": "^5.0.1"
+    "jsonwebtoken": "^9.0.3",
+    "sqlite3": "^5.1.7",
+    "swagger-ui-express": "^5.0.1",
+    "typeorm": "^0.3.28"
   },
   "devDependencies": {
-    "@types/swagger-ui-express": "^4.1.8"
+    "@types/swagger-ui-express": "^4.1.8",
+    "ts-node-dev": "^2.0.0"
   }
 }
