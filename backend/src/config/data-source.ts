@@ -2,6 +2,7 @@ import "reflect-metadata";
 import { DataSource } from "typeorm";
 import { User } from "../modules/users/user.entity";
 import { Nota } from "../modules/notas/notas.entity";
+import { MangaPicture } from "../modules/manga_picture/manga_picture.entity";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -14,6 +15,7 @@ export const AppDataSource = new DataSource({
   entities: [
     User, 
     Nota,
+    MangaPicture,
   ], 
   migrations: [],
   subscribers: [],

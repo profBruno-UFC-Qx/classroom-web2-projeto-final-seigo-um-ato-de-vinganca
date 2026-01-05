@@ -13,4 +13,5 @@ export class Nota {
 
   @Column()
     nota!: number;
+  
 }

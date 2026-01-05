@@ -7,6 +7,7 @@ import { notasRoutes } from "./modules/notas/notas.routes";
 import { generateOpenAPIDocument } from "./config/swagger";
 import "./modules/users/user.docs";
 import "./modules/notas/notas.docs";
+import "./modules/manga_picture/manga_picture.docs";
 
 const app = express();
 

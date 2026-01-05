@@ -9,21 +9,19 @@ export class NotasService {
   }
 
   async createNota(notaData: Partial<Nota>): Promise<Nota> {
-    const existingNota = await this.notasRepository.findByUserIdAndCapCoverId(
-      notaData.userId!,
+    const existingNota = await this.notasRepository.findByCapCoverId(
       notaData.idCapCover!
     );
 
     if (existingNota) {
-      throw new Error("Nota já existe para este usuário e capa.");
+      return this.updateNota(notaData.idCapCover!, notaData);
     }
 
     return await this.notasRepository.create(notaData);
   }
 
   async updateNota(notaId: number, notaData: Partial<Nota>): Promise<Nota> {
-    const existingNota = await this.notasRepository.findByUserIdAndCapCoverId(
-      notaData.userId!,
+    const existingNota = await this.notasRepository.findByCapCoverId(
       notaData.idCapCover!
     );
 
@@ -39,8 +37,8 @@ export class NotasService {
     return await this.notasRepository.update(updatedNota);
   }
 
-  async getNotaById(notaId: number): Promise<Nota> {
-    const nota = await this.notasRepository.findByUserIdAndCapCoverId(notaId, 0); // Ajuste conforme necessário
+  async getNotaById(notaId: number): Promise<number> {
+    const nota = await this.notasRepository.getMediaFromRepository(notaId);
 
     if (!nota) {
       throw new Error("Nota não encontrada.");

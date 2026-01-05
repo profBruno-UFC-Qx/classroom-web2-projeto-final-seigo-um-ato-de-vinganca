@@ -11,7 +11,6 @@ export const notaCreateSchema = z.object({
 
 export const notaResponseSchema = z.object({
   id: z.number(),
-  userId: z.number(),
   idCapCover: z.number(),
   nota: z.number(),
 }).openapi("NotaResponse");

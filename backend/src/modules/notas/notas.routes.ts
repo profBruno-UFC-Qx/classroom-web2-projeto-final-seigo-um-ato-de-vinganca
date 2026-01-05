@@ -9,5 +9,7 @@ const notasController = new NotasController();
 
 router.post("/notas", authMiddleware(), validate(notaCreateSchema), notasController.createNota);
 router.put("/notas/:id", authMiddleware(), validate(notaUpdateSchema), notasController.updateNota);
-router.get("/notas/:id", authMiddleware(), notasController.getNotaById);
+router.get("/notas/:id", authMiddleware(), notasController.getMediaNota);
+
+
 export { router as notasRoutes };

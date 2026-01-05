@@ -48,28 +48,6 @@ registry.registerPath({
 
 registry.registerPath({
   method: "get",
-  path: "/notas/{id}",
-  tags: ["Notas"],
-  summary: "Obter uma nota específica",
-  request: {
-    body: {
-        content:{
-            "application/json": { schema: notaResponseSchema },
-        }
-    },
-  },
-  responses: {
-    200: {
-      description: "Nota obtida com sucesso",
-      content: {
-        "application/json": { schema: notaResponseSchema },
-      },
-    },
-  },
-});
-
-registry.registerPath({
-  method: "get",
   path: "/notas/media",
   tags: ["Notas"],
   summary: "Obter a média da nota",

@@ -14,10 +14,20 @@ export class NotasRepository {
     return await this.repo.save(nota);
   }
 
-  async findByUserIdAndCapCoverId(userId: number, idCapCover: number): Promise<Nota | null> {
-    return await this.repo.findOneBy({ userId, idCapCover });
+  async getMediaFromRepository(idCapCover: number): Promise<number | null> {
+
+    const average = await this.repo.createQueryBuilder("nota")
+      .select("AVG(nota.nota)", "avg")
+      .where("nota.idCapCover = :idCapCover", { idCapCover })
+      .getRawOne();
+
+    return average ? average.avg : null;
   }
 
+  async findByCapCoverId(idCapCover: number): Promise<Nota | null> {
+    return await this.repo.findOne({ where: { idCapCover } });
+  }
+  
   async update(nota: Nota): Promise<Nota> {
     return await this.repo.save(nota);
   }

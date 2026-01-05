@@ -1,4 +1,4 @@
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import { NotasService } from './notas.service';
 
 
@@ -26,7 +26,7 @@ export class NotasController {
         }
     }
 
-    async getNotaById(req: Request, res: Response) {
+    async getMediaNota(req: Request, res: Response) {
         try {
             const notaId = parseInt(req.params.id, 10);
             const result = await notasService.getNotaById(notaId);

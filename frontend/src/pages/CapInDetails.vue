@@ -101,7 +101,8 @@ onMounted( async () => {
                 isFav.value = test.isFavorit
             }
         }
-        const calcNota = await api.get(`/notas/?populate=*`)        
+        const calcNota = await api.get(`/notas/?populate=*`)  
+          
         test = calcNota.data.data.filter((ea : Nota) => ea.cap_cover.idCapCover === id)
         if(test){
             let aux = 0;
