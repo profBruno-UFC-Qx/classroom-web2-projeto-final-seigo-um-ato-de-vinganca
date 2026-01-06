@@ -31,7 +31,7 @@ registry.registerPath({
   summary: "Obter as fotos do Manga por ID do capítulo",
   request: {
     params: z.object({
-      id: z.string().uuid(),
+      id: z.number().openapi({ example: 1 }),
     }),
   },
   responses: {

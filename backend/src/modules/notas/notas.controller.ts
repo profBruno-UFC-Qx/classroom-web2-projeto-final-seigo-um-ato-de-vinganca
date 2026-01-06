@@ -28,8 +28,8 @@ export class NotasController {
 
     async getMediaNota(req: Request, res: Response) {
         try {
-            const notaId = parseInt(req.params.id, 10);
-            const result = await notasService.getNotaById(notaId);
+            const idCapCover = parseInt(req.params.id, 10);
+            const result = await notasService.getNotaByIdCapCover(idCapCover);
             return res.status(200).json(result);
         } catch (error: any) {
             return res.status(400).json({success: false, message: error.message});

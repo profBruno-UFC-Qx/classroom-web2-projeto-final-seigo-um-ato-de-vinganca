@@ -30,6 +30,9 @@ registry.registerPath({
   tags: ["Notas"],
   summary: "Atualizar uma nota existente",
   request: {
+    params: z.object({
+      id: z.number().openapi({ example: 1 }),
+    }),
     body: {
       content: {
         "application/json": { schema: notaUpdateSchema },
@@ -48,15 +51,13 @@ registry.registerPath({
 
 registry.registerPath({
   method: "get",
-  path: "/notas/media",
+  path: "/notas/media/{id}",
   tags: ["Notas"],
-  summary: "Obter a média da nota",
+  summary: "Obter a média das notas do capítulo pelo id do capítulo",
   request: {
-    body: {
-      content: {
-        "application/json": { schema: notaMediaSchema },
-      },
-    },
+    params: z.object({
+      id: z.number().openapi({ example: 1 }),
+    }),
   },
   responses: {
     200: {

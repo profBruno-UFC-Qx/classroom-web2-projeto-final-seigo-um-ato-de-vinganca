@@ -11,6 +11,8 @@ export class MangaPictureService {
   async uploadMangaPicture(
     mangaPictureData: Partial<MangaPicture>
   ): Promise<MangaPicture> {
+    console.log("bem aqui")
+
     const existingMangaPicture =
       await this.mangaPictureRepository.findByIdCapCover(
         mangaPictureData.idCapCover!
@@ -18,7 +20,7 @@ export class MangaPictureService {
 
     if (existingMangaPicture) {
       return this.updateMangaPicture(
-        mangaPictureData.idCapCover!,
+        existingMangaPicture.id,
         mangaPictureData
       );
     }

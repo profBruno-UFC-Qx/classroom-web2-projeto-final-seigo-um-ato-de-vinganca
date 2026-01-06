@@ -7,5 +7,8 @@ import { mangaPictureUploadSchema } from "./manga_picture.schema";
 const router = Router();
 const mangaPictureController = new MangaPictureController();
 
-router.post("/manga-picture", authMiddleware(), validate(mangaPictureUploadSchema), mangaPictureController.uploadMangaPicture);
-router.get("/manga-picture/:id", authMiddleware(), mangaPictureController.getMangaPictureByIdCapCover);
+router.post("/manga-picture", validate(mangaPictureUploadSchema), mangaPictureController.uploadMangaPicture);
+router.get("/manga-picture/:id", mangaPictureController.getMangaPictureByIdCapCover);
+
+
+export { router as mangaPictureRoutes };
