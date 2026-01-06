@@ -69,7 +69,7 @@ package-lock.json
 *.sql
 *.sqlite
 *.sqlite3
-
+database.sqlite
 
 ############################
 # Misc.

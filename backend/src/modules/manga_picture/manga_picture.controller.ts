@@ -6,6 +6,7 @@ export class MangaPictureController {
   async uploadMangaPicture(req: Request, res: Response) {
     try {
       const mangaPictureData = req.body;
+      console.log("bem aqui no controller")
       const result = await mangaPictureService.uploadMangaPicture(mangaPictureData);
       return res.status(201).json(result);
     } catch (error: any) {

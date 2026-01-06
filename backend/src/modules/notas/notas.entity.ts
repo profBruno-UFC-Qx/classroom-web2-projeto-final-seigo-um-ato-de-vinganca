@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity("notas")
 export class Nota {
@@ -12,6 +12,6 @@ export class Nota {
   idCapCover!: number;
 
   @Column()
-    nota!: number;
+  nota!: number;
   
 }

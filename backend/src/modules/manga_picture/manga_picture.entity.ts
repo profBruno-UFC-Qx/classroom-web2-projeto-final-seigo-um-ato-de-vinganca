@@ -9,9 +9,6 @@ export class MangaPicture {
   @Column()
   idCapCover!: number;
 
-  @Column()
-  idMangaPicture!: number;
-
   @Column("simple-array")
-  picturesUrl!: string[];
+  pictures!: string[];
 }

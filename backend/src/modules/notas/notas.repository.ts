@@ -21,11 +21,11 @@ export class NotasRepository {
       .where("nota.idCapCover = :idCapCover", { idCapCover })
       .getRawOne();
 
-    return average ? average.avg : null;
+    return average ? parseFloat(average.avg.toFixed(2)) : null;
   }
 
-  async findByCapCoverId(idCapCover: number): Promise<Nota | null> {
-    return await this.repo.findOne({ where: { idCapCover } });
+  async findByCapCoverIdAndUserId(idCapCover: number, userId: number): Promise<Nota | null> {
+    return await this.repo.findOne({ where: { idCapCover, userId } });
   }
   
   async update(nota: Nota): Promise<Nota> {

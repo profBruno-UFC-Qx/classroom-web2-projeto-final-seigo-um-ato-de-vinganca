@@ -155,6 +155,7 @@
             console.log(`Error ao criar um capitulo ${e}`)
         }
     }
+    
     onMounted(async () => {
         try{
             const { data } = await api.get(`/act-covers?populate=*`)
