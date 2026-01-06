@@ -4,12 +4,14 @@ import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import { userRoutes } from "./modules/users/user.routes";
 import { notasRoutes } from "./modules/notas/notas.routes";
+import { capCoverRoutes } from "./modules/cap_cover/cap_cover.routes";
 import { actCoverRoutes } from "./modules/act_cover/act_cover.routes";
 import { mangaPictureRoutes } from "./modules/manga_picture/manga_picture.routes";
 import { generateOpenAPIDocument } from "./config/swagger";
 import "./modules/users/user.docs";
 import "./modules/notas/notas.docs";
 import "./modules/manga_picture/manga_picture.docs";
+import "./modules/cap_cover/cap_cover.docs"
 import "./modules/act_cover/act_cover.docs";
 
 const app = express();
@@ -26,6 +28,7 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(openApiDocument));
 // Rotas
 app.use("/api", userRoutes);
 app.use("/api", notasRoutes); 
+app.use("/api", capCoverRoutes);
 app.use("/api", actCoverRoutes)
 app.use("/api", mangaPictureRoutes);
 
