@@ -15,7 +15,7 @@ export class CommentRepository {
     }
 
     async findById(comment_id: number): Promise<Comment | null> {
-        return await this.repo.findOne({ where: { comment_id } });
+        return await this.repo.findOne({ where: { comment_id }, relations: ["user"], });
     }
 
     async delete(comment_id: number): Promise<void> {

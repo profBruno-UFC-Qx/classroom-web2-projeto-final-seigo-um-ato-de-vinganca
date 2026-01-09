@@ -24,5 +24,5 @@ export class Favorite {
   })
   @JoinColumn({ name: "capCover_id" })
   capCover!: CapCover;
-  user_id: any;
+
 }

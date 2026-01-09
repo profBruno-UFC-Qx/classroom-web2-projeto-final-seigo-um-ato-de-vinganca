@@ -12,11 +12,15 @@ export class CommentService {
         return await this.CommentRepository.create(CommentData);
     }
 
-    async updateComment(comment_id: number, CommentData: Partial<Comment>): Promise<Comment> {
+    async updateComment(comment_id: number, CommentData: Partial<Comment>): Promise<Comment> { 
         const existingComment = await this.CommentRepository.findById(comment_id);
 
         if (!existingComment) {
             throw new Error('Commentário não encontrado.');
+        }
+        // DPS TBM CHECAR SE FOR DIFERENTE DE ADMIN
+        if (existingComment.user.user_id !== CommentData.user?.user_id){
+            throw new Error('Você não é o criador deste comentário!')
         }
 
         const updatedComment = {

@@ -7,7 +7,7 @@ export class Nota {
   @PrimaryGeneratedColumn()
   nota_id!: number;
 
-  @Column()
+  @Column({ type: "float" })
   nota!: number;
   
   //Relacoes
@@ -18,6 +18,5 @@ export class Nota {
   @ManyToOne(() => CapCover, (capCover) => capCover.capCover_id)
   @JoinColumn({ name: "capCover_id" })
   capCover!: CapCover;
-  user_id: any;
   
 }

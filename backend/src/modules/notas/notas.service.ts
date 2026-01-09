@@ -1,5 +1,6 @@
 import { NotasRepository } from "./notas.repository";
 import { Nota } from "./notas.entity";
+import { User } from "../users/user.entity";
 
 export class NotasService {
   private notasRepository: NotasRepository;

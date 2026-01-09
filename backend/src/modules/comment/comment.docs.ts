@@ -1,5 +1,5 @@
 import { registry } from "../../config/swagger";
-import { commentCreateSchema, commentUpdateSchema, commentDeleteSchema, commentResponseSchema } from "./comment.schema";
+import { commentCreateSchema, commentUpdateSchema, commentResponseSchema } from "./comment.schema";
 import { z } from "zod";
 
 registry.registerPath({
@@ -7,6 +7,7 @@ registry.registerPath({
   path: "/comments",
     tags: ["Comments"],
     summary: "Criar um novo comentario",
+    security: [{ bearerAuth: [] }],
     request: {
         body: {
             content: {
@@ -29,7 +30,11 @@ registry.registerPath({
     path: "/comments/{id}",
     tags: ["Comments"],
     summary: "Atualizar um comentario existente",
+    security: [{ bearerAuth: [] }],
     request: {
+        params: z.object({
+            id: z.number().openapi({ example: 1 }),
+        }),
         body: {
             content: {
                 "application/json": { schema: commentUpdateSchema },
@@ -48,15 +53,14 @@ registry.registerPath({
 
 registry.registerPath({
     method: "delete",
-    path: "/comments",
+    path: "/comments/{id}",
     tags: ["Comments"],
     summary: "Deletar um comentario existente",
+    security: [{ bearerAuth: [] }],
     request: {
-        body: {
-            content: {
-                "application/json": { schema: commentDeleteSchema },
-            },
-        },
+        params: z.object({
+            id: z.number().openapi({ example: 1 }),
+        }),
     },
     responses: {
         200: {

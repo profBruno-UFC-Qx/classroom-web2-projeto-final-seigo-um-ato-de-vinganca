@@ -2,28 +2,28 @@ import { Router } from 'express';
 import { FavoriteController } from './favorite.controller';
 import { authMiddleware } from '../../shared/middlewares/auth.middleware';
 import { validate } from '../../shared/middlewares/validate';
-import { favoriteCreateSchema } from './favorite.schema';
+import { favoriteCreateSchema, favoriteUpdateSchema } from './favorite.schema';
 
 const router = Router();
 const favoriteController = new FavoriteController();
 
 router.post(
   '/favorite',
-  // authMiddleware,
+  authMiddleware(),
   validate(favoriteCreateSchema),
   favoriteController.addFavorite
 );
 
 router.get(
-  '/favorite/:idCapCover',
-  // authMiddleware,
-  favoriteController.getUserFavoritesByIdCapCover
+  '/favoritesByUser',
+  authMiddleware(),
+  favoriteController.getUserFavorites
 );
 
 router.put(
-  '/favorite',
-  // authMiddleware,
-  validate(favoriteCreateSchema),
+  '/favorite/:favorite_id',
+  authMiddleware(),
+  validate(favoriteUpdateSchema),
   favoriteController.updateFavorite
 )
 

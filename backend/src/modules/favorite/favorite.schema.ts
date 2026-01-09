@@ -4,15 +4,17 @@ import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 extendZodWithOpenApi(z);
 
 export const favoriteCreateSchema = z.object({
-  user_id: z.coerce.number().openapi({ example: 1 }),
-  capCover_id: z.coerce.number().openapi({ example: 2 }),
+  capCover: z.coerce.number().openapi({ example: 2 }),
   isFavorite: z.boolean().openapi({ example: true }),
 }).openapi('FavoriteCreateRequest');
 
+export const favoriteUpdateSchema = z.object({
+  isFavorite: z.boolean().openapi({ example: true }),
+}).openapi('FavoriteUpdateRequest');
+
 export const favoriteResponseSchema = z.object({
     favorite_id: z.coerce.number(),
-    user_id: z.coerce.number(),
-    capCover_id: z.coerce.number(),
+    capCover: z.coerce.number(),
     isFavorite: z.boolean(),
 }).openapi('FavoriteResponse');
   

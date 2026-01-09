@@ -19,7 +19,7 @@ export class FavoriteRepository {
   }
 
   async findByUserId(user_id: number): Promise<Favorite[]> {
-    return await this.repo.find({ where: { user: { user_id } } });
+    return await this.repo.find({ where: { user: { user_id } }, relations: ['capCover'] });
   }
 
   async findByIdCapCover(capCover_id: number): Promise<Favorite[]> {

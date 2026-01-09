@@ -7,8 +7,7 @@ import { notaCreateSchema, notaUpdateSchema } from "./notas.schema";
 const router = Router();
 const notasController = new NotasController();
 
-router.post("/notas", validate(notaCreateSchema), notasController.createNota);
-router.put("/notas/:id", validate(notaUpdateSchema), notasController.updateNota);
+router.post("/notas", authMiddleware(), validate(notaCreateSchema), notasController.createNota);
 router.get("/notas/media/:id", notasController.getMediaNota);
 
 

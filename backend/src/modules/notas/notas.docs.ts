@@ -1,3 +1,4 @@
+import { request } from "express";
 import { registry } from "../../config/swagger";
 import { notaCreateSchema, notaMediaSchema, notaUpdateSchema, notaResponseSchema } from "./notas.schema";
 import { z } from "zod";
@@ -5,49 +6,51 @@ import { z } from "zod";
 registry.registerPath({
   method: "post",
   path: "/notas",
-    tags: ["Notas"],
-    summary: "Criar uma nova nota",
-    request: {
-      body: {
-        content: {
-          "application/json": { schema: notaCreateSchema },
-        },
-      },
-    },
-    responses: {
-      201: {
-        description: "Nota criada com sucesso",
-        content: {
-          "application/json": { schema: notaResponseSchema },
-        },
-      },
-    },
-});
-
-registry.registerPath({
-  method: "put",
-  path: "/notas/{id}",
   tags: ["Notas"],
-  summary: "Atualizar uma nota existente",
+  summary: "Criar ou atualizar uma nota",
+  security: [{ bearerAuth: [] }],
   request: {
-    params: z.object({
-      id: z.number().openapi({ example: 1 }),
-    }),
     body: {
       content: {
-        "application/json": { schema: notaUpdateSchema },
+        "application/json": { schema: notaCreateSchema },
       },
     },
   },
   responses: {
-    200: {
-      description: "Nota atualizada com sucesso",
+    201: {
+      description: "Nota criada com sucesso",
       content: {
         "application/json": { schema: notaResponseSchema },
       },
     },
   },
 });
+
+// registry.registerPath({
+//   method: "put",
+//   path: "/notas/{id}",
+//   tags: ["Notas"],
+//   security: [{ bearerAuth: [] }],
+//   summary: "Atualizar uma nota existente",
+//   request: {
+//     params: z.object({
+//       id: z.number().openapi({ example: 1 }),
+//     }),
+//     body: {
+//       content: {
+//         "application/json": { schema: notaUpdateSchema },
+//       },
+//     },
+//   },
+//   responses: {
+//     200: {
+//       description: "Nota atualizada com sucesso",
+//       content: {
+//         "application/json": { schema: notaResponseSchema },
+//       },
+//     },
+//   },
+// });
 
 registry.registerPath({
   method: "get",

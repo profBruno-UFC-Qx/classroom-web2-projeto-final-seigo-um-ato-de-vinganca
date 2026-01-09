@@ -6,7 +6,10 @@ const commentService = new CommentService();
 export class CommentController {
     async createComment(req: Request, res: Response) {
         try {
-            const CommentData = req.body;
+            const CommentData = {
+                ...req.body,
+                user: { user_id : req.body.userId}
+            }
             const result = await commentService.createComment(CommentData);
             return res.status(201).json(result);
         } catch (error: any) {
@@ -16,8 +19,11 @@ export class CommentController {
 
     async updateComment(req: Request, res: Response) {
         try {
-            const CommentData = req.body;
-            const comment_id = CommentData.id;
+            const CommentData = {
+                ...req.body,
+                user: { user_id : req.body.userId}
+            }
+            const comment_id = parseInt(req.params.id, 10)
             const result = await commentService.updateComment(comment_id, CommentData);
             return res.status(200).json(result);
         } catch (error: any) {
