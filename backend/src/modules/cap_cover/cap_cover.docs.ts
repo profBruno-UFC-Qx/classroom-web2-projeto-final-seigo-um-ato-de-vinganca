@@ -38,7 +38,7 @@ registry.registerPath({
   method: "get",
   path: "/cap-covers/{id}",
   tags: ["CapCover"],
-  summary: "Obter capitulo por id",
+  summary: "Obter todos capítulos por id do ato",
   request: {
     params: z.object({
       id: z.number().int().positive(),

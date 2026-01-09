@@ -14,20 +14,19 @@ export class CommentRepository {
         return await this.repo.save(Comment);
     }
 
-    async findById(CommentId: number): Promise<Comment | null> {
-        console.log("Finding Comment by ID:", CommentId);
-        return await this.repo.findOne({ where: { id: CommentId } });
+    async findById(comment_id: number): Promise<Comment | null> {
+        return await this.repo.findOne({ where: { comment_id } });
     }
 
-    async delete(CommentId: number): Promise<void> {
-        await this.repo.delete(CommentId);
+    async delete(comment_id: number): Promise<void> {
+        await this.repo.delete(comment_id);
     }
 
     async update(Comment: Comment): Promise<Comment> {
         return await this.repo.save(Comment);
     }
 
-    async findByIdCapCover(idCapCover: number): Promise<Comment[]> {
-        return await this.repo.find({ where: { idCapCover } });
+    async findByIdCapCover(capCover_id: number): Promise<Comment[]> {
+        return await this.repo.find({ where: { capCover: { capCover_id } } });
     }
 }

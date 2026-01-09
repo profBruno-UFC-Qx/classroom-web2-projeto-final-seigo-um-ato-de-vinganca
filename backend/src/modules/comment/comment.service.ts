@@ -12,8 +12,8 @@ export class CommentService {
         return await this.CommentRepository.create(CommentData);
     }
 
-    async updateComment(CommentId: number, CommentData: Partial<Comment>): Promise<Comment> {
-        const existingComment = await this.CommentRepository.findById(CommentId);
+    async updateComment(comment_id: number, CommentData: Partial<Comment>): Promise<Comment> {
+        const existingComment = await this.CommentRepository.findById(comment_id);
 
         if (!existingComment) {
             throw new Error('Commentário não encontrado.');
@@ -27,18 +27,18 @@ export class CommentService {
         return await this.CommentRepository.update(updatedComment);
     }
 
-    async getCommentsByIdCapCover(idCapCover: number): Promise<Comment[]> {
-        return await this.CommentRepository.findByIdCapCover(idCapCover);
+    async getCommentsByIdCapCover(capCover_id: number): Promise<Comment[]> {
+        return await this.CommentRepository.findByIdCapCover(capCover_id);
     }
 
-    async deleteComment(CommentId: number): Promise<{ success: boolean; message: string }> {
-        const existingComment = await this.CommentRepository.findById(CommentId);
+    async deleteComment(comment_id: number): Promise<{ success: boolean; message: string }> {
+        const existingComment = await this.CommentRepository.findById(comment_id);
 
         if (!existingComment) {
             throw new Error('Comentário não encontrado.');
         }
 
-        await this.CommentRepository.delete(CommentId);
-        return { success: true, message: `Comentário com ID ${CommentId} deletado.` };
+        await this.CommentRepository.delete(comment_id);
+        return { success: true, message: `Comentário com ID ${comment_id} deletado.` };
     }
 }

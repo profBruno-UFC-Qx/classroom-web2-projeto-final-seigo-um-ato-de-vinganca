@@ -1,15 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, } from "typeorm";
+import { CapCover } from "../cap_cover/cap_cover.entity";
 
 @Entity("act_cover")
 export class ActCover {
     @PrimaryGeneratedColumn()
-    id!: number; // i want this to be auto incrementing
-
-    // @Column()
-    // idCapCover!: number;
+    actCover_id!: number;
 
     @Column()
-    actCover!: string;
+    actCoverPicture!: string;
     
     @Column()
     actDetails!: string;
@@ -17,9 +15,10 @@ export class ActCover {
     @Column()
     isReady!: boolean;
 
-    // @Column()
-    // capCovers!: number; //relationship to cap_covers
-
     @Column()
     actNumber!: number;
+
+    // RELACOES
+    @OneToMany(() => CapCover, (capCover) => capCover.capCover_id)
+    capCovers!: CapCover[];
 }

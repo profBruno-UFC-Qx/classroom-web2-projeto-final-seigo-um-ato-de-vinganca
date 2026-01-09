@@ -18,8 +18,8 @@ export class ActCoverRepository {
     return await this.repo.findOne({ where: { actNumber: uniqueField } }); // Precisa arrumar dps
   }
 
-  async findById(actCoverId: number): Promise<ActCover | null> {
-    return await this.repo.findOne({ where: { id: actCoverId } });
+  async findById(actCover_id: number): Promise<ActCover | null> {
+    return await this.repo.findOne({ where: { actCover_id } });
   }
 
   async findAll(): Promise<ActCover[]> {
@@ -30,7 +30,7 @@ export class ActCoverRepository {
     return await this.repo.save(actCover);
   }
 
-  async delete(actCoverId: number): Promise<void> {
-    await this.repo.delete(actCoverId);
+  async delete(actCover_id: number): Promise<void> {
+    await this.repo.delete(actCover_id);
   }
 }

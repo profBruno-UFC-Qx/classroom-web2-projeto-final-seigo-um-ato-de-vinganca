@@ -14,16 +14,16 @@ export class FavoriteRepository {
     return await this.repo.save(favorite);
   }
 
-  async findByCapCoverIdAndUserId(idCapCover: number, userId: number): Promise<Favorite | null> {
-    return await this.repo.findOne({ where: { idCapCover, userId } });
+  async findByCapCoverIdAndUserId(capCover_id: number, user_id: number): Promise<Favorite | null> {
+    return await this.repo.findOne({ where: { capCover: { capCover_id }, user: { user_id } } });
   }
 
-  async findByUserId(userId: number): Promise<Favorite[]> {
-    return await this.repo.find({ where: { userId } });
+  async findByUserId(user_id: number): Promise<Favorite[]> {
+    return await this.repo.find({ where: { user: { user_id } } });
   }
 
-  async findByIdCapCover(idCapCover: number): Promise<Favorite[]> {
-    return await this.repo.find({ where: { idCapCover } });
+  async findByIdCapCover(capCover_id: number): Promise<Favorite[]> {
+    return await this.repo.find({ where: { capCover: { capCover_id } } });
   }
 
   async update(favorite: Favorite): Promise<Favorite> {

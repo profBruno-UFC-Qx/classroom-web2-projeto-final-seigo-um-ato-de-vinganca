@@ -7,8 +7,8 @@ export class FavoriteController {
     async addFavorite(req: Request, res: Response) {
         try {
             const favoriteData = req.body;
-            const userId = favoriteData.userId;
-            const result = await favoriteService.addFavorite(userId, favoriteData);
+            const user_id = favoriteData.userId;
+            const result = await favoriteService.addFavorite(user_id, favoriteData);
             return res.status(201).json(result);
         } catch (error: any) {
             return res.status(400).json({ success: false, message: error.message });
@@ -28,10 +28,8 @@ export class FavoriteController {
 
     async getUserFavoritesByIdCapCover(req: Request, res: Response) {
         try {
-            console.log('Request Params:', req.params.idCapCover);
-            const idCapCover = parseInt(req.params.idCapCover, 10);
-            console.log('ID Cap Cover:', idCapCover);
-            const result = await favoriteService.getUserFavoritesByIdCapCover(idCapCover);
+            const capCover_id = parseInt(req.params.capCover_id, 10);
+            const result = await favoriteService.getUserFavoritesByIdCapCover(capCover_id);
             return res.status(200).json(result);
         } catch (error: any) {
             return res.status(400).json({ success: false, message: error.message });
@@ -41,8 +39,8 @@ export class FavoriteController {
     async updateFavorite(req: Request, res: Response) {
         try {
             const favoriteData = req.body;
-            const userId = favoriteData.userId;
-            const result = await favoriteService.updateFavorite(userId, favoriteData);
+            const user_id = favoriteData.user_id;
+            const result = await favoriteService.updateFavorite(user_id, favoriteData);
             return res.status(200).json(result);
         } catch (error: any) {
             return res.status(400).json({ success: false, message: error.message });

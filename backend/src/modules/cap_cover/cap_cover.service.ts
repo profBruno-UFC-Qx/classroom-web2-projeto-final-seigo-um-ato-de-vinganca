@@ -8,15 +8,15 @@ export class CapCoverService {
   }
 
   async create(data: any) {
-    const existing = await this.capCoverRepo.findByIdCapCover(data.idCapCover);
-    if (existing) throw new Error("CapCover with this idCapCover already exists");
+    const existing = await this.capCoverRepo.findByCapCoverNumber(data.capCoverNumber);
+    if (existing) throw new Error("CapCover com este capCoverNumber já existe");
 
     return await this.capCoverRepo.create(data);
   }
 
   async update(idCapCover: number, data: any) {
     const existing = await this.capCoverRepo.findByIdCapCover(idCapCover);
-    if (!existing) throw new Error("CapCover with this idCapCover does not exist");
+    if (!existing) throw new Error("CapCover with this id does not exist");
 
     const updated = {
         ...existing,
@@ -30,8 +30,8 @@ export class CapCoverService {
     return await this.capCoverRepo.findAll(page, limit, search);
   }
 
-  async getById(idCapCover: number) {
-    return await this.capCoverRepo.findByIdCapCover(idCapCover)
+  async getById(actCoverId: number) {
+    return await this.capCoverRepo.findByActCoverId(actCoverId)
   }
 
   async delete(idCapCover: number){

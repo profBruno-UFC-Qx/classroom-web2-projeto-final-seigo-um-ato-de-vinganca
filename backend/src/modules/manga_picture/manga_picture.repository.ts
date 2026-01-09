@@ -14,11 +14,16 @@ export class MangaPictureRepository {
     return await this.repo.save(mangaPicture);
   }
 
-  async findByIdCapCover(idCapCover: number): Promise<MangaPicture | null> {
-    return await this.repo.findOne({ where: { idCapCover } });
+  async findByIdCapCover(capCover_id: number): Promise<MangaPicture[] | null> {
+    return await this.repo.find({ where: { capCover: { capCover_id: capCover_id } } });
   }
 
   async update(mangaPicture: MangaPicture): Promise<MangaPicture> {
     return await this.repo.save(mangaPicture);
+  }
+
+  async deleteMangaPictureById(mangaPictureId: number): Promise<{success: boolean, message: string}> {
+    await this.repo.delete({ mangaPicture_id: mangaPictureId });
+    return {success: true, message: "Manga Picture deletado com sucesso."};
   }
 }   

@@ -25,9 +25,8 @@ export class UserController {
 
   async getMe(req: Request, res: Response) {
     try {
-      const userId = req.body.userId; 
-      
-      const user = await userService.getProfile(userId);
+      const user_id = req.body.user_id; 
+      const user = await userService.getProfile(user_id);
       return res.status(200).json(user);
     } catch (error: any) {
       return res.status(400).json({ success: false, message: error.message });

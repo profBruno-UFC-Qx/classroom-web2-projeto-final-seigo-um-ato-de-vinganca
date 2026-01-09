@@ -1,5 +1,5 @@
 import { registry } from "../../config/swagger"
-import { mangaPictureUploadSchema, mangaPictureResponseSchema } from "./manga_picture.schema";
+import { mangaPictureUploadSchema, mangaPictureResponseSchema, mangaPictureDeleteSchema } from "./manga_picture.schema";
 import { z } from "zod";
 
 registry.registerPath({
@@ -7,6 +7,7 @@ registry.registerPath({
   path: "/manga-picture",
     tags: ["MangaPicture"],
     summary: "Fazer upload de um capitulo de fotos do Manga",
+    security: [{ bearerAuth: [] }],
     request: {
       body: {
         content: {
@@ -43,3 +44,19 @@ registry.registerPath({
     },
   },
 });
+
+registry.registerPath({
+  method: "delete",
+  path: "/manga-picture/{mangaPicture_id}",
+  tags: ["MangaPicture"],
+  summary: "Excluir uma Manga Picture",
+  security: [{ bearerAuth: [] }],
+  request: {
+    params: mangaPictureDeleteSchema,
+  },
+  responses: {
+    200: {
+      description: "Manga Picture excluída com sucesso",
+    },
+  },
+})

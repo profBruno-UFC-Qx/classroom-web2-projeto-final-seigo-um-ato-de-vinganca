@@ -30,7 +30,11 @@ export class UserRepository {
       .getOne();
   }
 
-  async findById(id: number): Promise<User | null> {
-    return await this.repo.findOneBy({ id });
+  async findById(user_id: number): Promise<User | null> {
+    return await this.repo.findOneBy({ user_id });
+  }
+
+  async countUsers(): Promise<number> {
+    return await this.repo.count();
   }
 }

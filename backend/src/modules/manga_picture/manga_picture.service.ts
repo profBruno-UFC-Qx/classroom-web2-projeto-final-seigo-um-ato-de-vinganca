@@ -12,14 +12,15 @@ export class MangaPictureService {
     mangaPictureData: Partial<MangaPicture>
   ): Promise<MangaPicture> {
 
+    console.log("MangaPictureData received in service:", mangaPictureData);
     const existingMangaPicture =
       await this.mangaPictureRepository.findByIdCapCover(
-        mangaPictureData.idCapCover!
+        mangaPictureData.capCover!.capCover_id
       );
 
-    if (existingMangaPicture) {
+    if (existingMangaPicture && existingMangaPicture.length > 0) {
       return this.updateMangaPicture(
-        existingMangaPicture.id,
+        existingMangaPicture[0].mangaPicture_id,
         mangaPictureData
       );
     }
@@ -33,15 +34,15 @@ export class MangaPictureService {
   ): Promise<MangaPicture> {
     const existingMangaPicture =
       await this.mangaPictureRepository.findByIdCapCover(
-        mangaPictureData.idCapCover!
+        mangaPictureData.capCover!.capCover_id
       );
 
-    if (!existingMangaPicture || existingMangaPicture.id !== mangaPictureId) {
+    if (!existingMangaPicture || existingMangaPicture.length === 0 || existingMangaPicture[0].mangaPicture_id !== mangaPictureId) {
       throw new Error("Manga Picture não encontrada.");
     }
 
     const updatedMangaPicture = {
-      ...existingMangaPicture,
+      ...existingMangaPicture[0],
       ...mangaPictureData,
     };
 
@@ -54,10 +55,14 @@ export class MangaPictureService {
     const mangaPicture =
       await this.mangaPictureRepository.findByIdCapCover(mangaPictureId);
 
-    if (!mangaPicture) {
+    if (!mangaPicture || mangaPicture.length === 0) {
       throw new Error("Manga Picture não encontrada.");
     }
 
-    return mangaPicture;
+    return mangaPicture[0];
+  }
+
+  async deleteMangaPicture(mangaPictureId: number): Promise<void> {
+      await this.mangaPictureRepository.deleteMangaPictureById(mangaPictureId);
   }
 }

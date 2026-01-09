@@ -1,9 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm";
+import { Nota } from "../notas/notas.entity";
+import { Favorite } from "../favorite/favorite.entity";
+import { Comment } from "../comment/comment.entity";
 
 @Entity("users")
 export class User {
   @PrimaryGeneratedColumn()
-  id!: number;
+  user_id!: number;
 
   @Column()
   username!: string;
@@ -14,7 +17,7 @@ export class User {
   @Column({ select: false })
   password!: string;
 
-  @Column({ default: 'authenticated' })
+  @Column()
   role!: string;
 
   @Column({ default: true })
@@ -29,5 +32,14 @@ export class User {
   @UpdateDateColumn()
   updatedAt!: Date;
   
-  // FALTA NOTAS/FAVORITOS
+  // Relacoes
+
+  @OneToMany(() => Nota, (nota) => nota.user_id)
+  notas!: Nota[];
+
+  @OneToMany(() => Favorite, (favorite) => favorite.user_id)
+  favorites!: Favorite[];
+
+  @OneToMany(() => Comment, (comment) => comment.user_id)
+  comments!: Comment[];
 }

@@ -7,22 +7,27 @@ export const actCoverCreateSchema = z.object({
   actNumber: z.coerce.number().openapi({ example: 1 }),
   actDetails: z.string().max(1000).openapi({ example: 'Descrição do ato' }),
   isReady: z.coerce.boolean().openapi({ example: true }),
-  actCover: z.string().openapi({ example: 'act_cover.jpg as BASE64' }),
-  capCovers: z.coerce.number().openapi({ example: 1 }),
+  actCoverPicture: z.string().openapi({ example: 'act_cover.jpg as BASE64' }),
 }).openapi('ActCoverCreateRequest');
 
 export const actCoverResponseSchema = z.object({
-  id: z.number(),
-  title: z.string(),
-  description: z.string().nullable(),
-  userId: z.number(),
+  actCover_id: z.number(),
+  actDetails: z.string(),
+  isReady: z.string().nullable(),
+  actNumber: z.number(),
+  actCoverPicture: z.string(),
+  capCovers : z.array(z.object({
+    capCover_id: z.number(),
+    capCoverPicture: z.string(),
+    capDetails: z.string(),
+    isReady: z.boolean(),
+    capNumber: z.number(),
+  })).optional(),
 }).openapi('ActCoverResponse');
 
 export const actCoverUpdateSchema = z.object({
   actDetails: z.string().max(1000).openapi({ example: 'Descrição do ato' }).optional(),
-  actCover: z.string().openapi({ example: 'act_cover.jpg as BASE64' }).optional(),
+  actCoverPicture: z.string().openapi({ example: 'act_cover.jpg as BASE64' }).optional(),
 }).openapi('ActCoverUpdateRequest');
 
-export const actCoverGetOneSchema = z.object({
-  id: z.number().openapi({ example: 1 }),
-}).openapi('ActCoverGetOneResponse');
+export const actCoverGetOneSchema = actCoverResponseSchema.openapi('ActCoverGetOneResponse');

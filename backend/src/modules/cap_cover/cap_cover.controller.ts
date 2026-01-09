@@ -15,8 +15,8 @@ export class CapCoverController {
 
   async update(req: Request, res: Response) {
     try {
-      const idCapCover = parseInt(req.params.id, 10)
-      const result = await capCoverService.update(idCapCover, req.body);
+      const capCover_id = parseInt(req.params.id, 10)
+      const result = await capCoverService.update(capCover_id, req.body);
       return res.status(201).json(result);
     } catch (error: any) {
       return res.status(400).json({ message: error.message });
@@ -36,10 +36,10 @@ export class CapCoverController {
     }
   }
 
-   async getById(req: Request, res: Response) {
+   async getByActCoverId(req: Request, res: Response) {
     try {
-      const idCapCover = parseInt(req.params.id, 10)
-      const result = await capCoverService.getById(idCapCover);
+      const actCover_id = parseInt(req.params.id, 10)
+      const result = await capCoverService.getById(actCover_id);
       if(result) return res.status(200).json(result);
       else return res.status(404).json({ message: "Capítulo não encontrado"})
     } catch (error: any) {
@@ -49,8 +49,8 @@ export class CapCoverController {
 
   async delete(req: Request, res: Response){
     try {
-      const idCapCover = parseInt(req.params.id, 10)
-      const result = await capCoverService.delete(idCapCover)
+      const capCover_id = parseInt(req.params.id, 10)
+      const result = await capCoverService.delete(capCover_id)
       return res.status(204).json(result)
     } catch (error: any) {
       return res.status(400).json({message: error.message})

@@ -2,6 +2,11 @@ import { UserRepository } from "./user.repository";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { User } from "./user.entity";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+
 
 export class UserService {
   private userRepo: UserRepository;
@@ -19,7 +24,7 @@ export class UserService {
     const user = await this.userRepo.create({
       ...data,
       password: hashedPassword,
-      role: 'authenticated',
+      role: data.role || "authenticated",
       confirmed: true
     });
     
@@ -60,9 +65,31 @@ export class UserService {
 
   private generateToken(user: User) {
     return jwt.sign(
-      { id: user.id, role: user.role }, 
+      { id: user.user_id, role: user.role }, 
       process.env.JWT_SECRET || "secret", 
       { expiresIn: "7d" }
     );
+  }
+
+  // Logica para criar um admin se nao existir nenhum usuario no banco
+  async createAdminIfNoneExists() {
+    const userCount = await this.userRepo.countUsers();
+    if (userCount === 0 && process.env.ADM_PASSWORD) {
+      const adminData: User = {
+        username: "admin",
+        email: "admin@email.com",
+        password: process.env.ADM_PASSWORD,
+        role: "admin",
+        confirmed: true,
+        blocked: false,
+        user_id: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        notas: [],
+        favorites: [],
+        comments: []
+      };
+      await this.register(adminData);
+    }
   }
 }

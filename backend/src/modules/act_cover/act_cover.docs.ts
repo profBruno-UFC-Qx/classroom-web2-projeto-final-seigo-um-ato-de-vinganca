@@ -7,6 +7,7 @@ registry.registerPath({
   path: "/act-cover",
     tags: ["ActCover"],
     summary: "Criar um novo ActCover",
+    security: [{ bearerAuth: [] }],
     request: {
       body: {
         content: {
@@ -29,6 +30,7 @@ registry.registerPath({
   path: "/act-cover/{id}",
   tags: ["ActCover"],
   summary: "Atualizar um ActCover existente",
+  security: [{ bearerAuth: [] }],
   request: {
     params: z.object({
       id: z.number().openapi({ example: 1 }),
@@ -54,6 +56,7 @@ registry.registerPath({
   path: "/act-cover/{id}",
   tags: ["ActCover"],
   summary: "Deletar um ActCover existente",
+  security: [{ bearerAuth: [] }],
   request: {
     params: z.object({
       id: z.number().openapi({ example: 1 }),

@@ -14,18 +14,18 @@ export class NotasRepository {
     return await this.repo.save(nota);
   }
 
-  async getMediaFromRepository(idCapCover: number): Promise<number | null> {
+  async getMediaFromRepository(capCover_id: number): Promise<number | null> {
 
     const average = await this.repo.createQueryBuilder("nota")
       .select("AVG(nota.nota)", "avg")
-      .where("nota.idCapCover = :idCapCover", { idCapCover })
+      .where("nota.capCover_id = :capCover_id", { capCover_id })
       .getRawOne();
 
     return average ? parseFloat(average.avg.toFixed(2)) : null;
   }
 
-  async findByCapCoverIdAndUserId(idCapCover: number, userId: number): Promise<Nota | null> {
-    return await this.repo.findOne({ where: { idCapCover, userId } });
+  async findByCapCoverIdAndUserId(capCover_id: number, user_id: number): Promise<Nota | null> {
+    return await this.repo.findOne({ where: { capCover : { capCover_id }, user:  { user_id } } });
   }
   
   async update(nota: Nota): Promise<Nota> {

@@ -9,7 +9,7 @@ export class FavoriteService {
   }
     async addFavorite(userId: number, favoriteData: Partial<Favorite>): Promise<Favorite> {
         const existingFavorite = await this.favoriteRepository.findByCapCoverIdAndUserId(
-            favoriteData.idCapCover!,
+            favoriteData.capCover?.capCover_id!,
             userId
         );
 
@@ -21,8 +21,8 @@ export class FavoriteService {
 
         // Create new favorite
         const newFavoriteData: Partial<Favorite> = {
-            userId,
-            idCapCover: favoriteData.idCapCover!,
+            user: { user_id: userId } as any,
+            capCover: favoriteData.capCover,
             isFavorite: favoriteData.isFavorite ?? true,
         };
 
@@ -34,10 +34,10 @@ export class FavoriteService {
     async getUserFavoritesByIdCapCover(idCapCover: number): Promise<Favorite[]> {
         return this.favoriteRepository.findByIdCapCover(idCapCover);
     }
-    async updateFavorite(userId: number, favoriteData: Partial<Favorite>): Promise<Favorite> {
+    async updateFavorite(user_id: number, favoriteData: Partial<Favorite>): Promise<Favorite> {
         const existingFavorite = await this.favoriteRepository.findByCapCoverIdAndUserId(
-            favoriteData.idCapCover!,
-            userId
+            favoriteData.capCover?.capCover_id!,
+            user_id
         );
 
         if (!existingFavorite) {

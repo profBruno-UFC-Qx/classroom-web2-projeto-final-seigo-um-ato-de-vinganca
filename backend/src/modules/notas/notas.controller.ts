@@ -17,9 +17,9 @@ export class NotasController {
 
     async updateNota(req: Request, res: Response) {
         try {
-            const notaId = parseInt(req.params.id, 10);
+            const nota_id = parseInt(req.params.nota_id, 10);
             const notaData = req.body;
-            const result = await notasService.updateNota(notaId, notaData);
+            const result = await notasService.updateNota(nota_id, notaData);
             return res.status(200).json(result);
         } catch (error: any) {
             return res.status(400).json({success: false, message: error.message});
@@ -28,8 +28,8 @@ export class NotasController {
 
     async getMediaNota(req: Request, res: Response) {
         try {
-            const idCapCover = parseInt(req.params.id, 10);
-            const result = await notasService.getNotaByIdCapCover(idCapCover);
+            const capCover_id = parseInt(req.params.capCover_id, 10);
+            const result = await notasService.getNotaByIdCapCover(capCover_id);
             return res.status(200).json(result);
         } catch (error: any) {
             return res.status(400).json({success: false, message: error.message});

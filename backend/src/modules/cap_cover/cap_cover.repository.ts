@@ -1,6 +1,6 @@
 import { AppDataSource } from "../../config/data-source";
 import { CapCover } from "./cap_cover.entity";
-import { Repository, Like } from "typeorm";
+import { Repository, Like, Equal } from "typeorm";
 
 export class CapCoverRepository {
   private repo: Repository<CapCover>;
@@ -11,6 +11,8 @@ export class CapCoverRepository {
 
   async create(data: Partial<CapCover>): Promise<CapCover> {
     const CapCover = this.repo.create(data);
+    
+    console.log(CapCover);
     return await this.repo.save(CapCover);
   }
 
@@ -44,12 +46,20 @@ export class CapCoverRepository {
     };
   }
 
-  async findByIdCapCover(idCapCover: number): Promise<CapCover | null> {
-    return await this.repo.findOneBy({ idCapCover });
+  async findByIdCapCover(capCover_id: number): Promise<CapCover | null> {
+    return await this.repo.findOneBy({ capCover_id });
   }
 
-  async delete(idCapCover: number): Promise<void> {
-    const res =  await this.repo.delete({ idCapCover: idCapCover })
-    console.log(res)
+  async findByActCoverId(actCover_id: number): Promise<CapCover[] | null> {
+    return await this.repo.findBy({ actCover: { actCover_id } });
+  }
+
+  async findByCapCoverNumber(capCoverNumber: number): Promise<CapCover | null> {
+    return await this.repo.findOneBy({ capCoverNumber });
+  }
+
+  async delete(capCover_id: number): Promise<{success: boolean, message: string}> {
+    const res =  await this.repo.delete({ capCover_id });
+    return {success: true, message: "CapCover deletado com sucesso."};
   }
 }

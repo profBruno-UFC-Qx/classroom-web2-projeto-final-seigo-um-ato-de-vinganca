@@ -14,18 +14,18 @@ export class ActCoverService {
     );
 
     if (existingActCover) {
-      return this.updateActCover(actCoverData.id!, actCoverData);
+      return this.updateActCover(actCoverData.actCover_id!, actCoverData);
     }
 
     return await this.actCoverRepository.create(actCoverData);
   }
 
-  async updateActCover(actCoverId: number, actCoverData: Partial<ActCover>): Promise<ActCover> {
+  async updateActCover(actCover_id: number, actCoverData: Partial<ActCover>): Promise<ActCover> {
     const existingActCover = await this.actCoverRepository.findByUniqueField(
-      actCoverId
+      actCover_id
     );
 
-    if (!existingActCover || existingActCover.id !== actCoverId) {
+    if (!existingActCover || existingActCover.actCover_id !== actCover_id) {
       throw new Error("ActCover não encontrada.");
     }
 
@@ -42,8 +42,8 @@ export class ActCoverService {
     return actCovers;
   }
 
-  async getActCoverById(actCoverId: number): Promise<ActCover> {
-    const actCover = await this.actCoverRepository.findById(actCoverId);
+  async getActCoverById(actCover_id: number): Promise<ActCover> {
+    const actCover = await this.actCoverRepository.findById(actCover_id);
 
     if (!actCover) {
       throw new Error("ActCover não encontrada.");
@@ -52,14 +52,14 @@ export class ActCoverService {
     return actCover;
   }
 
-  async deleteActCover(actCoverId: number): Promise<{ success: boolean; message: string }> {
-    const actCover = await this.actCoverRepository.findById(actCoverId);
+  async deleteActCover(actCover_id: number): Promise<{ success: boolean; message: string }> {
+    const actCover = await this.actCoverRepository.findById(actCover_id);
 
     if (!actCover) {
       throw new Error("ActCover não encontrada.");
     }
 
-    await this.actCoverRepository.delete(actCoverId);
+    await this.actCoverRepository.delete(actCover_id);
     return { success: true, message: "ActCover deletada com sucesso." };
   }
 }
