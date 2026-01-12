@@ -1,12 +1,18 @@
 import { Request, Response } from "express";
 import { MangaPictureService } from "./manga_picture.service";
+import { saveMagaPictures } from "../../utils/file";
 const mangaPictureService = new MangaPictureService();
 
 export class MangaPictureController {
   async uploadMangaPicture(req: Request, res: Response) {
     try {
-      const mangaPictureData = req.body;
-      const result = await mangaPictureService.uploadMangaPicture(mangaPictureData);
+      const { capCover_id } = req.body;
+      if (!req.files || !Array.isArray(req.files)) {
+        return res.status(400).json({ success: false, message: "No files provided" });
+      }
+      const pictures = saveMagaPictures(capCover_id, req.files)
+      
+      const result = await mangaPictureService.uploadMangaPicture(capCover_id, pictures);
       return res.status(201).json(result);
     } catch (error: any) {
       return res.status(400).json({ success: false, message: error.message });

@@ -5,29 +5,50 @@ import { z } from "zod";
 registry.registerPath({
   method: "post",
   path: "/manga-picture",
-    tags: ["MangaPicture"],
-    summary: "Fazer upload de um capitulo de fotos do Manga",
-    security: [{ bearerAuth: [] }],
-    request: {
-      body: {
-        content: {
-          "application/json": { schema: mangaPictureUploadSchema },
-        },
-      },
-    },
-    responses: {
-      201: {
-        description: "Manga Picture criada com sucesso",
-        content: {
-          "application/json": { schema: mangaPictureResponseSchema },
-        },
-      },
-    },
+  tags: ["MangaPicture"],
+  summary: "Fazer upload das páginas de um capítulo",
+  security: [{ bearerAuth: [] }],
+  request: {
+    body: {
+      content: {
+        "multipart/form-data": {
+          schema: {
+            type: "object",
+            properties: {
+              capCover_id: {
+                type: "number",
+                example: 1
+              },
+              pages: {
+                type: "array",
+                items: {
+                  type: "string",
+                  format: "binary"
+                }
+              }
+            },
+            required: ["capCover_id", "pages"]
+          }
+        }
+      }
+    }
+  },
+  responses: {
+    201: {
+      description: "Páginas do capítulo enviadas com sucesso",
+      content: {
+        "application/json": {
+          schema: mangaPictureResponseSchema
+        }
+      }
+    }
+  }
 });
+
 
 registry.registerPath({
   method: "get",
-  path: "/manga-picture/{id}",
+  path: "/manga-picture/cap-cover/{id}",
   tags: ["MangaPicture"],
   summary: "Obter as fotos do Manga por ID do capítulo",
   request: {

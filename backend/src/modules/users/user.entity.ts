@@ -34,10 +34,10 @@ export class User {
   
   // Relacoes
 
-  @OneToMany(() => Nota, (nota) => nota.user_id)
+  @OneToMany(() => Nota, (nota) => nota.user)
   notas!: Nota[];
 
-  @OneToMany(() => Favorite, (favorite) => favorite.user_id)
+  @OneToMany(() => Favorite, (favorite) => favorite.user)
   favorites!: Favorite[];
 
   @OneToMany(() => Comment, (comment) => comment.user_id)

@@ -4,8 +4,7 @@ import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 extendZodWithOpenApi(z);
 
 export const mangaPictureUploadSchema = z.object({
-  capCover: z.number().int().positive(),
-  pictures: z.array(z.string()).nonempty(),
+  capCover_id: z.coerce.number().int().positive(),
 }).openapi('MangaPictureUploadRequest');
 
 export const mangaPictureResponseSchema = z.object({

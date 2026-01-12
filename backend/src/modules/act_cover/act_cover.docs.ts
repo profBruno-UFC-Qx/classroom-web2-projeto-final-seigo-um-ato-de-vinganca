@@ -1,29 +1,44 @@
 import { registry } from "../../config/swagger";
-import { actCoverCreateSchema, actCoverUpdateSchema, actCoverResponseSchema, actCoverGetOneSchema } from "./act_cover.schema";
+import { actCoverCreateSchema, actCoverUpdateSchema, actCoverResponseSchema, actCoverGetOneSchema, deleteActCoverScheme } from "./act_cover.schema";
 import { z } from "zod";
 
 registry.registerPath({
   method: "post",
   path: "/act-cover",
-    tags: ["ActCover"],
-    summary: "Criar um novo ActCover",
-    security: [{ bearerAuth: [] }],
-    request: {
-      body: {
-        content: {
-          "application/json": { schema: actCoverCreateSchema },
-        },
-      },
-    },
-    responses: {
-      201: {
-        description: "ActCover criada com sucesso",
-        content: {
-          "application/json": { schema: actCoverResponseSchema },
-        },
-      },
-    },
-});
+  tags: ["ActCover"],
+  summary: "Criar um novo ActCover",
+  security: [{ bearerAuth: [] }],
+  request: {
+    body: {
+      content: {
+        "multipart/form-data": {
+          schema: {
+            type: "object",
+            properties: {
+              actNumber: { type: "number" },
+              actDetails: { type: "string" },
+              isReady: { type: "boolean" },
+              actCoverPicture: {
+                type: "string",
+                format: "binary"   // arquivo
+              }
+            },
+            required: ["actNumber", "actDetails", "isReady", "actCoverPicture"]
+          }
+        }
+      }
+    }
+  },
+  responses: {
+    201: {
+      description: "ActCover criada com sucesso",
+      content: {
+        "application/json": { schema: actCoverResponseSchema }
+      }
+    }
+  }
+})
+
 
 registry.registerPath({
   method: "put",
@@ -37,9 +52,21 @@ registry.registerPath({
     }),
     body: {
       content: {
-        "application/json": { schema: actCoverUpdateSchema },
-      },
-    },
+        "multipart/form-data": {
+          schema: {
+            type: "object",
+            properties: {
+              actDetails: { type: "string" },
+              actCoverPicture: {
+                type: "string",
+                format: "binary"   // 👈 arquivo
+              }
+            },
+            required: ["actDetails"]
+          }
+        }
+      }
+    }
   },
   responses: {
     200: {
@@ -61,6 +88,11 @@ registry.registerPath({
     params: z.object({
       id: z.number().openapi({ example: 1 }),
     }),
+    body: {
+      content: {
+        "application/json": { schema: deleteActCoverScheme },
+      },
+    }
   },
   responses: {
     200: {

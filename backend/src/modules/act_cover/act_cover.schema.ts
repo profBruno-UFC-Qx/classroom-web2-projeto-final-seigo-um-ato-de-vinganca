@@ -7,7 +7,7 @@ export const actCoverCreateSchema = z.object({
   actNumber: z.coerce.number().openapi({ example: 1 }),
   actDetails: z.string().max(1000).openapi({ example: 'Descrição do ato' }),
   isReady: z.coerce.boolean().openapi({ example: true }),
-  actCoverPicture: z.string().openapi({ example: 'act_cover.jpg as BASE64' }),
+  // actCoverPicture: z.instanceof(File).openapi({ example: 'act_cover.jpg as BASE64' }),
 }).openapi('ActCoverCreateRequest');
 
 export const actCoverResponseSchema = z.object({
@@ -31,3 +31,7 @@ export const actCoverUpdateSchema = z.object({
 }).openapi('ActCoverUpdateRequest');
 
 export const actCoverGetOneSchema = actCoverResponseSchema.openapi('ActCoverGetOneResponse');
+
+export const deleteActCoverScheme = z.object({
+  actCoverPicture: z.string(),
+}).openapi('DeleteActCoverResponse');

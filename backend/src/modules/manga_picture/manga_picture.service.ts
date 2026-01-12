@@ -9,23 +9,18 @@ export class MangaPictureService {
   }
 
   async uploadMangaPicture(
-    mangaPictureData: Partial<MangaPicture>
+    capCover_id : number, pictures : string[]
   ): Promise<MangaPicture> {
-
-    console.log("MangaPictureData received in service:", mangaPictureData);
     const existingMangaPicture =
       await this.mangaPictureRepository.findByIdCapCover(
-        mangaPictureData.capCover!.capCover_id
+        capCover_id
       );
 
     if (existingMangaPicture && existingMangaPicture.length > 0) {
-      return this.updateMangaPicture(
-        existingMangaPicture[0].mangaPicture_id,
-        mangaPictureData
-      );
+      throw new Error("Manga Picture já existente")
     }
-
-    return await this.mangaPictureRepository.create(mangaPictureData);
+    
+    return await this.mangaPictureRepository.create(capCover_id, pictures);
   }
 
   async updateMangaPicture(

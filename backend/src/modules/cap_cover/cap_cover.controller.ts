@@ -1,11 +1,15 @@
 import { Request, Response } from "express";
 import { CapCoverService } from "./cap_cover.service";
+import { saveImage } from "../../utils/file";
 
 const capCoverService = new CapCoverService();
 
 export class CapCoverController {
   async create(req: Request, res: Response) {
     try {
+      const capCoverData = req.body;
+      const imageURL = saveImage(req.file)
+      capCoverData.capCoverPicture = imageURL;
       const result = await capCoverService.create(req.body);
       return res.status(201).json(result);
     } catch (error: any) {
@@ -16,7 +20,9 @@ export class CapCoverController {
   async update(req: Request, res: Response) {
     try {
       const capCover_id = parseInt(req.params.id, 10)
-      const result = await capCoverService.update(capCover_id, req.body);
+      const capCoverData = req.body;
+      capCoverData.capCoverPicture = req.file ? req.file : undefined;
+      const result = await capCoverService.update(capCover_id, capCoverData);
       return res.status(201).json(result);
     } catch (error: any) {
       return res.status(400).json({ message: error.message });
@@ -33,6 +39,17 @@ export class CapCoverController {
       return res.status(200).json(result);
     } catch (error: any) {
       return res.status(500).json({ message: error.message });
+    }
+  }
+
+  async getById(req : Request, res : Response){
+    try{
+      const capCover_id = Number(req.params.id)
+      const result = await capCoverService.getByCapCoverId(capCover_id)
+
+      return res.status(200).json(result)
+    }catch(error : any){
+      return res.status(500).json({message: error.message})
     }
   }
 
@@ -58,3 +75,4 @@ export class CapCoverController {
   }
 
 }
+

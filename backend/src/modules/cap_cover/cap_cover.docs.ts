@@ -1,3 +1,4 @@
+import { ca } from "zod/v4/locales";
 import { registry } from "../../config/swagger"
 import { CapCoverResponseSchema, createCapCoverSchema } from "./cap_cover.schema";
 import { z } from "zod";
@@ -38,6 +39,36 @@ registry.registerPath({
   method: "get",
   path: "/cap-covers/{id}",
   tags: ["CapCover"],
+  summary: "Obter capa do capitulo pelo ID do capitulo",
+  request: {
+    params: z.object({
+      id: z.number().int().positive(),
+    }),
+  },
+  responses: {
+    200: {
+      description: "Lista de capítulos retornada com sucesso",
+      content: {
+        "application/json": {
+          schema: z.object({
+            data: z.array(CapCoverResponseSchema),
+            meta: z.object({
+              total: z.number(),
+              page: z.number(),
+              limit: z.number(),
+              totalPages: z.number(),
+            }),
+          }),
+        },
+      },
+    },
+  },
+});
+
+registry.registerPath({
+  method: "get",
+  path: "/cap-covers/act-cover/{id}",
+  tags: ["CapCover"],
   summary: "Obter todos capítulos por id do ato",
   request: {
     params: z.object({
@@ -64,9 +95,24 @@ registry.registerPath({
   request: {
     body: {
       content: {
-        "application/json": { schema: createCapCoverSchema },
-      },
-    },
+        "multipart/form-data": {
+          schema: {
+            type: "object",
+            properties: {
+              capCoverTitle : { type: "string" },
+              capCoverNumber: { type: "number" },
+              description: { type: "string" },
+              actCover: { type: "number" },
+              capCoverPicture: { 
+                type: "string",
+                format: "binary"   // arquivo
+              },
+            },
+            required: ["capCoverTitle", "capCoverNumber", "description", "capCoverPicture", "actCover"]
+          }
+        }
+      }
+    }
   },
   responses: {
     201: {
@@ -92,9 +138,22 @@ registry.registerPath({
     }),
     body: {
       content: {
-        "application/json": { schema: createCapCoverSchema },
-      },
-    },
+        "multipart/form-data": {
+          schema: {
+            type: "object",
+            properties: {
+              capCoverTitle : { type: "string" },
+              description: { type: "string" },
+              capCoverPicture: { 
+                type: "string",
+                format: "binary"   // arquivo
+              },
+            },
+            required: ["capCoverTitle", "description"]
+          }
+        }
+      }
+    }
   },
   responses: {
     201: {

@@ -1,5 +1,9 @@
 import { ActCoverRepository } from './act_cover.repository';
 import { ActCover } from './act_cover.entity';
+import path from 'path';
+import fs from 'fs';
+import { UPLOAD_DIR } from '../../app';
+import { deleteByPath, saveImage } from '../../utils/file';
 
 export class ActCoverService {
   private actCoverRepository: ActCoverRepository;
@@ -21,20 +25,30 @@ export class ActCoverService {
   }
 
   async updateActCover(actCover_id: number, actCoverData: Partial<ActCover>): Promise<ActCover> {
-    const existingActCover = await this.actCoverRepository.findByUniqueField(
+    const existingActCover = await this.actCoverRepository.findById(
       actCover_id
     );
 
-    if (!existingActCover || existingActCover.actCover_id !== actCover_id) {
+    if (!existingActCover) {
       throw new Error("ActCover não encontrada.");
     }
 
-    const updatedActCover = {
-      ...existingActCover,
-      ...actCoverData,
-    };
+    // Se veio nova imagem
+    if (actCoverData.actCoverPicture) {
+      const newImage = saveImage(actCoverData.actCoverPicture)
 
-    return await this.actCoverRepository.update(updatedActCover);
+      // apagar antiga
+      deleteByPath(existingActCover.actCoverPicture)
+
+      //Atualizar para nova
+      existingActCover.actCoverPicture = newImage
+    }
+
+    // atualizar outros campos
+    existingActCover.actDetails = actCoverData.actDetails ?? existingActCover.actDetails
+    existingActCover.isReady = actCoverData.isReady ?? existingActCover.isReady
+    existingActCover.actNumber = actCoverData.actNumber ?? existingActCover.actNumber
+    return await this.actCoverRepository.update(existingActCover);
   }
 
   async allActCover(): Promise<ActCover[]> {
@@ -52,14 +66,15 @@ export class ActCoverService {
     return actCover;
   }
 
-  async deleteActCover(actCover_id: number): Promise<{ success: boolean; message: string }> {
+  async deleteActCover(actCover_id: number, acCoverPicture : string): Promise<{ success: boolean; message: string }> {
     const actCover = await this.actCoverRepository.findById(actCover_id);
 
     if (!actCover) {
       throw new Error("ActCover não encontrada.");
     }
-
     await this.actCoverRepository.delete(actCover_id);
+    deleteByPath(acCoverPicture);
+
     return { success: true, message: "ActCover deletada com sucesso." };
   }
 }

@@ -11,16 +11,16 @@ export class CapCover {
   capCover_id!: number;
 
   @Column()
-  capCover!: string;
+  capCoverTitle!: string;
   
   @Column()
   capCoverNumber!: number;
 
-  @Column({ nullable: true })
+  @Column()
   description?: string;
 
-  @Column({ nullable: true })
-  coverUrl?: string;
+  @Column()
+  capCoverPicture?: string;
 
   @CreateDateColumn()
   createdAt!: Date;
