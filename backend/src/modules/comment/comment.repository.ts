@@ -27,6 +27,11 @@ export class CommentRepository {
     }
 
     async findByIdCapCover(capCover_id: number): Promise<Comment[]> {
-        return await this.repo.find({ where: { capCover: { capCover_id } } });
+        return await this.repo.find({ 
+            where: { capCover: { capCover_id } },
+            relations : {
+                user : true
+            }
+        });
     }
 }

@@ -30,23 +30,23 @@ export class CapCover {
 
   // RELACOES
 
-  @OneToMany(() => Nota, (nota) => nota.nota_id)
+  @OneToMany(() => Nota, (nota) => nota.capCover)
   notas!: Nota[];
 
-  @OneToMany(() => Comment, (comment) => comment.comment_id)
+  @OneToMany(() => Comment, (comment) => comment.capCover)
   comments!: Comment[];
 
-  @OneToMany(() => Favorite, (favorite) => favorite.favorite_id)
+  @OneToMany(() => Favorite, (favorite) => favorite.capCover)
   favorite!: Favorite[];
 
-  @ManyToOne(() => ActCover, (actCover) => actCover.actCover_id, {
+  @ManyToOne(() => ActCover, (actCover) => actCover.capCovers, {
     nullable: false,
     onDelete: "CASCADE",
   })
   @JoinColumn({ name: "actCover_id" })
   actCover!: ActCover;
 
-  @OneToOne(() => MangaPicture, (mangaPicture) => mangaPicture.mangaPicture_id)
+  @OneToOne(() => MangaPicture, (mangaPicture) => mangaPicture.capCover)
   mangaPictures!: MangaPicture;
   
 }

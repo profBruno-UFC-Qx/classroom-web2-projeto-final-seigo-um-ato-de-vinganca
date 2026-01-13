@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { BASE_URL, api } from '@/api'
 import { useRoute } from 'vue-router'
 import CommentCard from '@/components/CommentCard.vue'
@@ -10,14 +10,16 @@ import { useUserStore } from '@/stores/userStore'
 import type { capCardProps } from '@/types'
 import JSZip from 'jszip'
 import { getCapCoverById } from '@/api/services/capServices'
+import { createAndUpdateFav, getFavByCapCoverId } from '@/api/services/favoriteServices'
+import { createAndUpdateNota, getMediaNotas } from '@/api/services/notaServices'
+import { createComment, getAllCommentsByCapCoverId } from '@/api/services/commentsService'
 
 interface capInfFormat {
-    capCover : {
-        idCapCover : string
-        url : string
-    }
-    idCapCover : string
-    id : number
+    capCover_id : number,
+    capCoverTitle : string,
+    capCoverNumber : number,
+    description : string,
+    capCoverPicture : string
 }
 interface capInfFormatObject {
     cap_cover : {
@@ -29,13 +31,13 @@ interface capInfFormatObject {
 }
 
 interface picturesFormat {
-    name : string
-    url : string
-    cap_cover : capCardProps
+    mangaPicture_id : number
+    images : string[]
 }
+
 const capInf = ref<capInfFormat>({} as capInfFormat)
 const actualPage = ref<number>(0)
-let pictures : picturesFormat[] = [] 
+const pictures = ref<picturesFormat | null>(null) 
 const load = ref(true)
 const openModal = ref(false)
 const openModalForCheck = ref(false)
@@ -45,7 +47,6 @@ const textAreaInput = ref('')
 const route = useRoute()
 const id = route.params.id
 const comments = ref<CommentFormatResponse[]>([])
-const valor = ref<number>(1)
 const isFav = ref<boolean>(false)
 const notaCap = ref<number>(0)
 
@@ -59,61 +60,38 @@ const previousPage = () : void => {
     }
 }
 const nextPage = () : void => {
-    if(actualPage.value < pictures.length -1){
+    if(pictures.value?.images && actualPage.value < pictures.value.images.length - 1){
         actualPage.value++
     }
 }
+
 onMounted( async () => {
     try{
-        // const {data} = await api.get(`/cap-covers/?populate=*`)
-        const response = await getCapCoverById(Number(id))
-        console.log(response)
-        capInf.value = data.data.filter((ea : capInfFormat) => ea.idCapCover === id)[0]
-        const res = await api.get(`/manga-pictures/?populate=*`)
-        pictures = res.data.data.filter((ea : picturesFormat) => ea.cap_cover.idCapCover === id)[0].pictures?.sort((a : picturesFormat, b :picturesFormat) => {
-            // Extrair o número da string antes de ".png"
-            const numA = parseInt(a.name.split('.')[0], 10);
-            const numB = parseInt(b.name.split('.')[0], 10);
-            // Comparar os números
-            return numA - numB;
-        })
-        const resCom = await api.get(`/comentarios/?populate=*`,)
-        comments.value = resCom.data.data.filter((ea : CommentFormatResponse) => ea.cap_cover.idCapCover === id);
-
-        const resNota = await api.get(`/notas/?populate=*`, {
-            headers: {
-                Authorization: `Bearer ${jwt}`
-            }
-        })
-        let test = resNota.data.data.filter((ea : Nota) => {
-            return Number(ea.user.id) === Number(userStore.id) && ea.cap_cover.idCapCover === id
-        })[0]
-        if(test){
-            valor.value = test.notaAtual
-        }
+        const res = await getCapCoverById(Number(id))
+        const comment = await getAllCommentsByCapCoverId(Number(id))
+        const notas = await getMediaNotas(Number(id))
         if(jwt){
-            const resFav = await api.get(`/favoritos/?populate=*`, {
-                headers: {
-                    Authorization: `Bearer ${jwt}`
-                }
-            })
-            test = resFav.data.data.filter((ea : FavoritesFormatResponse) => {
-                return Number(ea.user.id) === Number(userStore.id) && ea.cap_cover.idCapCover === id
-            })[0]
-            if(test){
-                isFav.value = test.isFavorit
+            const fav = await getFavByCapCoverId(Number(id))
+            isFav.value = fav.isFavorite
+        }
+        capInf.value = {
+            capCoverNumber : res.capCoverNumber,
+            capCoverPicture : res.capCoverPicture,
+            capCoverTitle : res.capCoverTitle,
+            capCover_id : res.capCover_id,
+            description : res.description
+        }
+        
+        if(res.mangaPictures){
+            pictures.value = {
+                mangaPicture_id : res.mangaPictures.mangaPicture_id,
+                images : res.mangaPictures.pictures
             }
+        }else {
+            pictures.value = null
         }
-        const calcNota = await api.get(`/notas/?populate=*`)  
-          
-        test = calcNota.data.data.filter((ea : Nota) => ea.cap_cover.idCapCover === id)
-        if(test){
-            let aux = 0;
-            test.forEach((nota : Nota) => aux += nota.notaAtual)
-            const denominador = test.length === 0 ? 1 : test.length
-            notaCap.value = aux/denominador
-        }
-
+        comments.value = comment
+        notaCap.value = notas ? notas : 0
 
     }catch(e){
         console.log(e)
@@ -129,83 +107,19 @@ function handleTextChange(event : Event) : void {
 
 async function handleCreateComment(){
     try{
-        const datas = new FormData()
-        
-        const findRealId = await api.get(`/cap-covers/?populate=*`,{
-            headers: {
-                Authorization: `Bearer ${jwt}`
-            }
-        })
-        const realId = findRealId.data.data.filter((ea : capInfFormat) => ea.idCapCover === id)[0].id
-
-        datas.append('data', JSON.stringify({
-            text : textAreaInput.value,
-            cap_cover : realId,
-            user : userStore.id
-        }))
-
-        const res = await api.post('/comentarios', datas ,{
-            headers : {
-                Authorization : `Bearer ${jwt}`
-            }
-        })
-        if(res.status === 200){
-            window.location.reload()
-        }
+        await createComment(Number(id), textAreaInput.value)
+        window.location.reload()
     } catch(e){
         console.log(`Error ao criar comentario ${e}`)
     }
 }
 
-async function updateFavorite(e: Event) {
-    const input = e.target as HTMLInputElement;
 
+async function updateFavorite(e : Event) {
+    const input = e.target as HTMLInputElement
+    const isActive = input.checked
     try{
-
-        const check = await api.get(`/favoritos/?populate=*`, {
-            headers: {
-                Authorization: `Bearer ${userStore.jwt}`
-            }
-        });
-        const checkArray = check.data.data.filter((aux : FavoritesFormatResponse) =>
-            {return aux.cap_cover.idCapCover === id && aux.user.id === Number(userStore.id)}
-        )
-        
-        if(checkArray.length === 0){
-            const findRealId = await api.get(`/cap-covers/?populate=*`,{
-                headers: {
-                    Authorization: `Bearer ${jwt}`
-                }
-            })
-
-            const realId = findRealId.data.data.filter((ea : capInfFormat) => ea.idCapCover === id)[0].id
-
-            const datas = new FormData();
-            datas.append('data', JSON.stringify({
-                isFavorit: input.checked,
-                user: Number(userStore.id),
-                cap_cover: realId
-            }))
-        
-            await api.post(`/favoritos`, datas, {
-                headers: {
-                    Authorization: `Bearer ${userStore.jwt}`
-                }
-            })
-        }
-        else {
-            const datas = new FormData();
-            datas.append('data', JSON.stringify({
-                isFavorit: input.checked
-            }))
-
-            await api.put(`/favoritos/${checkArray[0].id}`, datas, {
-                headers: {
-                    Authorization: `Bearer ${userStore.jwt}`
-                }
-            })
-        }
-        
+        await createAndUpdateFav(Number(id), isActive)
     }
     catch(e){
         console.log(`error ao atualizar favorito ${e}`);
@@ -215,21 +129,13 @@ async function updateFavorite(e: Event) {
 async function downloadZip() {
     try {
         const zip = new JSZip();
-        const { data } = await api.get('/manga-pictures/?populate=*');
-        const realId = data.data.filter((ea : capInfFormatObject) => ea.cap_cover.idCapCover == id)[0].id
-        const pictures = data.data.filter((ea : capInfFormat)  => ea.id == realId)[0].pictures?.sort((a : picturesFormat , b : picturesFormat ) => 
-        {
-            // Extrair o número da string antes de ".png"
-            const numA = parseInt(a.name.split('.')[0], 10);
-            const numB = parseInt(b.name.split('.')[0], 10);
-            // Comparar os números
-            return numA - numB;
-        })
-        for (let i = 0; i < pictures.length; i++) {
-            const image = pictures[i];
-            const blobResponse = await api.get(BASE_URL + image.url, { responseType: 'blob' });
-            const blob = blobResponse.data;
-            zip.file(`imagem-${i+1}.png`, blob);
+        if (pictures.value?.images) {
+            for (let i = 0; i < pictures.value.images.length; i++) {
+                const image = pictures.value.images[i];
+                const blobResponse = await api.get(BASE_URL + image, { responseType: 'blob' });
+                const blob = blobResponse.data;
+                zip.file(`page-${i+1}.png`, blob);
+            }
         }
 
         const content = await zip.generateAsync({ type: "blob" });
@@ -237,7 +143,7 @@ async function downloadZip() {
 
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'imagens.zip';
+        link.download = `capitulo-${capInf.value.capCoverNumber}`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -249,50 +155,12 @@ async function downloadZip() {
 
 async function Avaliation (e : Event) {
     let input = e.target as HTMLInputElement
-    try{
-        const { data } = await api.get(`/notas/?populate=*`,{
-            headers: {
-                Authorization: `Bearer ${jwt}`
-            }
-        })
-        const check = data.data.filter((ea : Nota) => 
-        {
-            return Number(ea.user.id) === Number(userStore.id) && ea.cap_cover.idCapCover === id
-
-        })  
-        if(check.length >= 1){
-            const datas = new FormData()
-            datas.append('data',JSON.stringify({
-                notaAtual : input.value
-            }))
-            await api.put(`/notas/${check[0].id}`,datas,{
-            headers: {
-                Authorization: `Bearer ${jwt}`
-            }
-        })
-        }else{
-            const res = await api.get(`/cap-covers/?populate=*`,{
-                headers: {
-                    Authorization: `Bearer ${jwt}`
-                }
-            })
-            const realId = res.data.data.filter((ea : capInfFormat) => ea.idCapCover === id)[0].id
-            const datas = new FormData()
-            datas.append('data',JSON.stringify({
-                notaAtual : input.value,
-                user : userStore.id,
-                cap_cover: realId
-            }))
-            await api.post(`/notas`,datas,{
-                headers: {
-                    Authorization: `Bearer ${jwt}`
-                }
-            })
-        }
+    try {
+        await createAndUpdateNota(Number(id), Number(input.value))
+        window.location.reload()
     }catch(e){
-        console.log(`Error ao buscar as notas ${e}`)
+        console.log(e)
     }
-
 }
 
 function ReinitManga () {
@@ -335,8 +203,8 @@ function Choose() {
     @close="showManga" 
     @previous="previousPage" 
     @next="nextPage" 
-    :url="pictures[actualPage].url" 
-    :topLimit="pictures.length" 
+    :url="pictures?.images[actualPage]" 
+    :topLimit="pictures?.images.length" 
     :actualPage="actualPage"
     />
         
@@ -347,10 +215,11 @@ function Choose() {
         </div>
         <div v-else class="fullSize">
             <div class="capContainer">
-                <CapCard :url="capInf.capCover.url"  :capCover_id="capInf?.idCapCover" :isRouter="false"/>
+                <CapCard :capCoverPicture="capInf.capCoverPicture" :idCapCover="capInf?.capCover_id" :capCoverNumber="capInf.capCoverNumber" :isRouter="false"/>
             </div>
             <div class="restPage">
-                <h1 class="ler" @click="Choose">Ler mangá</h1>
+                <h1 class="ler" @click="Choose" v-if="pictures !== null">Ler mangá</h1>
+                <h1 class="indisponivel" v-if="pictures === null">Indisponível</h1>
                 <template v-if="userStore.jwt">
                     <span class="options">
                         <label for="favoritar">Favoritar:</label>
@@ -358,7 +227,7 @@ function Choose() {
                     </span>
                     <span class="options">
                         <label for="nota">Avaliar</label>
-                        <select name="nota" id="nota" @change="Avaliation" v-model="valor">
+                        <select name="nota" id="nota" @change="Avaliation">
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -379,7 +248,7 @@ function Choose() {
                             :key="index"
                             :user="comment.user.username"
                             :comment="comment.text"
-                            :id="comment.id"
+                            :id="comment.comment_id"
                             />
                         </div>
                     </div>
@@ -392,7 +261,7 @@ function Choose() {
                             :key="index"
                             :user="comment.user.username"
                             :comment="comment.text"
-                            :id="comment.id"
+                            :id="comment.comment_id"
                             />
                         </div>
                     </div>
@@ -476,6 +345,15 @@ function Choose() {
         color: orange;
         cursor: pointer;
     }
+
+    .indisponivel {
+        width: 40%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: orange;
+    }
+
     .options{
         width: 30%;
         display: flex;

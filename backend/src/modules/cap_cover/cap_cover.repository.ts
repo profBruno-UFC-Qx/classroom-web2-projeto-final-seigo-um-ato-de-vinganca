@@ -50,6 +50,19 @@ export class CapCoverRepository {
     return await this.repo.findOneBy({ capCover_id });
   }
 
+  async findByIdCapCoverPopulated(capCover_id : number): Promise<CapCover | null> {
+    return await this.repo.findOne({
+      where: { capCover_id: capCover_id },
+      relations: {
+        notas: true,
+        comments: true,
+        favorite: true,
+        actCover: true,
+        mangaPictures : true
+      }
+    })
+  }
+
   async findByActCoverId(actCover_id: number): Promise<CapCover[] | null> {
     return await this.repo.findBy({ actCover: { actCover_id } });
   }

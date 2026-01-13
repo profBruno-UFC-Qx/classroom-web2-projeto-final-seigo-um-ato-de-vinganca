@@ -6,7 +6,7 @@ import { BASE_URL, api } from '@/api'
 import { useUserStore } from '@/stores/userStore';
 import type { actionCardProps } from '@/types';
 interface CapCardProps  {
-    url:string
+    capCoverPicture : string
     idCapCover : number
     capCoverNumber : number
     isRouter ?: boolean
@@ -122,12 +122,12 @@ async function handleDeleteCap () {
     </CustomModal>
     <div v-if="isRouter">
     <RouterLink :to="`/capDetails/${idCapCover}`" class="capContainer">
-        <img :src="BASE_URL + url" :alt="`Capa do capitulo ${idCapCover}`"> 
+        <img :src="BASE_URL + capCoverPicture" :alt="`Capa do capitulo ${idCapCover}`"> 
         <h1>Capítulo {{ idCapCover }}</h1>
     </RouterLink>
     </div>
     <div v-else-if="forAdmin" class="imgContainer">
-        <img :src="BASE_URL + url" :alt="`Capa do capitulo ${idCapCover}`"> 
+        <img :src="BASE_URL + capCoverPicture" :alt="`Capa do capitulo ${idCapCover}`"> 
         <h3>Capítulo {{ idCapCover }}</h3>
         <span class="rowContainer">
             <button @click="handleIsOpenModalForUpdate">🆙</button>
@@ -136,7 +136,7 @@ async function handleDeleteCap () {
     </div>
     <div v-else>
         <div class="capContainer" id="noRouter">
-            <img :src="BASE_URL + url" :alt="`Capa do capitulo ${idCapCover}`"> 
+            <img :src="BASE_URL + capCoverPicture" :alt="`Capa do capitulo ${idCapCover}`"> 
             <h1>Capítulo {{ idCapCover }}</h1>
         </div>
     </div>

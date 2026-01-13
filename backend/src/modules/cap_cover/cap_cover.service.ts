@@ -49,7 +49,7 @@ export class CapCoverService {
   }
 
   async getByCapCoverId(capCover_id : number){
-    return await this.capCoverRepo.findByIdCapCover(capCover_id)
+    return await this.capCoverRepo.findByIdCapCoverPopulated(capCover_id)
   }
 
   async delete(idCapCover: number){

@@ -3,7 +3,7 @@
   import { useUserStore } from './stores/userStore';
 
   const userStore = useUserStore()
-  console.log(userStore)
+
 </script>
 
 <template>

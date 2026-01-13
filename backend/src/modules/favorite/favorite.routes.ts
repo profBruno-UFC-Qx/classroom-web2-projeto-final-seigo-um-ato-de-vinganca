@@ -20,8 +20,14 @@ router.get(
   favoriteController.getUserFavorites
 );
 
+router.get(
+  '/favorites/cap-covers/:id',
+  authMiddleware(),
+  favoriteController.getFavoriteByCapCoverId
+)
+
 router.put(
-  '/favorite/:favorite_id',
+  '/favorite/:id',
   authMiddleware(),
   validate(favoriteUpdateSchema),
   favoriteController.updateFavorite

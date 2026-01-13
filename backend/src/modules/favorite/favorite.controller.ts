@@ -7,8 +7,9 @@ export class FavoriteController {
     async addFavorite(req: Request, res: Response) {
         try {
             const user_id = req.body.userId;
+            const { userRole, ...safeBody} = req.body
             const favoriteData = {
-                ...req.body,
+                ...safeBody,
                 user: { user_id: user_id}
             };
             const result = await favoriteService.addFavorite(favoriteData);
@@ -28,10 +29,21 @@ export class FavoriteController {
         }
     }
 
+    async getFavoriteByCapCoverId(req : Request, res : Response){
+        try{
+            const user_id = req.body.userId
+            const capCover_id = req.params.id
+            const result = await favoriteService.getFavoriteByCapCoverId(user_id, Number(capCover_id));
+            return res.status(200).json(result)
+        }catch(e : any){
+            return res.status(400).json({ success : false, message: e.message})
+        }
+    }
+
     async updateFavorite(req: Request, res: Response) {
         try {
             const user_id = req.body.userId;
-            const favorite_id = parseInt(req.params.favorite_id,10)
+            const favorite_id = parseInt(req.params.id, 10)
             const favoriteData = {
                 ...req.body, 
                 favorite_id

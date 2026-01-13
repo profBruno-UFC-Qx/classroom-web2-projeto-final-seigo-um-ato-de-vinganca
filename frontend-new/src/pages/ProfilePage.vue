@@ -4,31 +4,28 @@
     import CapCard from '@/components/CapCard.vue';
     import type { capCardProps, FavoritesFormatResponse } from '@/types';
     import { api } from '@/api'
+    import { getFavByUser } from '@/api/services/favoriteServices';
 
+    interface favFormat {
+        favorite_id: number,
+        isFavorite: boolean,
+        capCover: {
+            capCoverNumber: number,
+            capCoverPicture: string,
+            capCoverTitle: string,
+            capCover_id: number,
+            description: string,
+        }
+    }
 
     const useStore = useUserStore()
     const { jwt } = useStore
-    const allCap = ref<capCardProps[]>()
-    
+    const allCap = ref<favFormat[]>()
+
     onMounted(async () => {
         try {
-            const { data } = await api.get(`/favoritos/?populate=*`, {
-                headers : {
-                    Authorization : `Bearer ${jwt}`
-                }
-            })
-            const aux = data.data.filter((ea : FavoritesFormatResponse) => {
-                return ea.user.id === Number(useStore.id) && ea.isFavorit === true
-            })
-
-            if(aux.length >= 1){
-                const res = await api.get(`/cap-covers/?populate=*`)
-                allCap.value = res.data.data.filter((ea: capCardProps) => {
-                    return aux.some((auxEle: FavoritesFormatResponse) => {
-                        return ea.idCapCover === auxEle.cap_cover.idCapCover;
-                    });
-                });
-            }
+            const res = await getFavByUser()
+            allCap.value = res
         }catch(e){ 
             console.log(`Error ao buscar favoritos ${e}`)
         }
@@ -44,10 +41,11 @@
         </div>
         <h1>Favoritos:</h1>
         <div class="listCaps">
-            <div v-for="(cap) in allCap" :key="cap.idCapCover" >
+            <div v-for="(cap) in allCap" :key="cap.capCover.capCover_id" >
                 <CapCard
-                :url="cap.capCover.url" 
-                :idCapCover="cap.idCapCover" 
+                :capCoverPicture="cap.capCover.capCoverPicture" 
+                :idCapCover="cap.capCover.capCover_id" 
+                :capCoverNumber="cap.capCover.capCoverNumber"
                 :isRouter="true"
                 :forAdmin="false"
                 />
