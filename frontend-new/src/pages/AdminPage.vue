@@ -282,7 +282,7 @@ import { createNewMangaPictures } from '@/api/services/mangaPicturesServices'
                             <CapCard 
                                 v-if="cap.actCover?.actCover_id === actObj?.actCover_id"
                                 :key="cap.capCover_id"
-                                :url="cap.capCoverPicture" 
+                                :capCoverPicture="cap.capCoverPicture" 
                                 :idCapCover="cap.capCover_id"     
                                 :capCoverNumber="cap.capCoverNumber" 
                                 :isRouter="false"
