@@ -32,7 +32,8 @@ export class CapCoverRepository {
       where: condition,
       skip: skip,
       take: limit,
-      order: { createdAt: "DESC" }
+      order: { createdAt: "DESC" },
+      relations: {actCover: true}
     });
 
     return {

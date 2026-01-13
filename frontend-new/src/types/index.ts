@@ -20,6 +20,9 @@ export type capCardProps = {
     capCoverNumber : number
     description : string
     capCoverPicture : string
+    actCover?: {
+        actCover_id ?: number
+    }
 }
 
 export type User = {

@@ -11,3 +11,14 @@ export async function getMangaPicturesByCapCoverId(capCover_id : number){
         console.log(`Error ao buscar manga pelo ID do capitulo: ${e}`)
     }
 }
+
+export async function createNewMangaPictures (datas : FormData) {
+    try {
+        const res = await api.post(`/manga-picture`, datas)
+        if(res.status === 201){
+            return res.data
+        }
+    }catch(e){
+        console.error(`Error ao tentar criar mangapictures: ${e}`)
+    }
+}
