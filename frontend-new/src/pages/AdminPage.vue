@@ -1,18 +1,21 @@
 <script setup lang="ts">
-    import { api } from '@/api'
-    import { ref, onMounted } from 'vue'
-    import CustomModal from '@/components/CustomModal.vue'
-    import { useUserStore } from '@/stores/userStore'
-    import type { actionCardProps, capCardProps } from '@/types'
-    import ActionToUse from '@/components/ActionToUse.vue'
-    import CapCard from '@/components/CapCard.vue'
-    import { createAct } from '@/api/services/actServices'
+import { api } from '@/api'
+import { ref, onMounted } from 'vue'
+import CustomModal from '@/components/CustomModal.vue'
+import { useUserStore } from '@/stores/userStore'
+import type { actionCardProps, capCardProps } from '@/types'
+import ActionToUse from '@/components/ActionToUse.vue'
+import CapCard from '@/components/CapCard.vue'
+import { createAct, getAllActs } from '@/api/services/actServices'
+import { createNewCapCover } from '@/api/services/capServices'
 import { create } from 'node_modules/axios/index.cjs'
+import { getAllCaps } from '@/api/services/capServices'
+import { createNewMangaPictures } from '@/api/services/mangaPicturesServices'
 
     const useStore = useUserStore()
     const jwt = useStore.jwt
-    const allActs = ref<actionCardProps[]>()
-    const allCap = ref<capCardProps[]>()
+    const allActs = ref<actionCardProps[]>([])
+    const allCap = ref<capCardProps[]>([])
     const loading = ref<boolean>(true)
     const isOpenModalToCreateNewAct = ref<boolean>(false)
     const isOpenModalToCreateNewCap = ref<boolean>(false)
@@ -22,8 +25,10 @@ import { create } from 'node_modules/axios/index.cjs'
     const createIsReady = ref<boolean>(false)
     const createActCover = ref()
     //Variaveis de criar um capítulo
-    const createIdCap = ref('')
-    const createIdAct = ref('')
+    const createIdCap = ref<number>()
+    const capCoverTitle = ref('')
+    const capDescription = ref('')
+    const createIdAct = ref<number>()
     const createCapCover = ref()
     const createCapPages = ref()
 
@@ -81,10 +86,10 @@ import { create } from 'node_modules/axios/index.cjs'
     }
     //Fim das coisas de criar um ato.
     //Deletando ato
-    async function handleDeleteAct(id : string){
+    async function handleDeleteAct(id : number){
         try{
             const { data } = await api.get(`/act-covers`)
-            const obj = data.data.filter((ea : actionCardProps) => ea.idCover === id)
+            const obj = data.data.filter((ea : actionCardProps) => ea.actCover_id === Number(id))
             const res = await api.delete(`/act-covers/${obj[0].id}`,{
                 headers : {
                     Authorization : `Bearer ${jwt}`
@@ -103,13 +108,25 @@ import { create } from 'node_modules/axios/index.cjs'
     function handleIdCap(e : Event){
         const input = e.target as HTMLInputElement;
         if (input.value) {
-            createIdCap.value = input.value;
+            createIdCap.value = Number(input.value);
         }
     }
     function handleIdAct (e : Event){
         const input = e.target as HTMLInputElement;
         if (input.value) {
-            createIdAct.value = input.value;
+            createIdAct.value = Number(input.value);
+        }
+    }
+    function handleTitle(e : Event){
+        const input = e.target as HTMLInputElement;
+        if (input.value) {
+            capCoverTitle.value = input.value;
+        }
+    }
+    function handleDescription(e : Event){
+        const input = e.target as HTMLInputElement;
+        if (input.value) {
+            capDescription.value = input.value;
         }
     }
     function handleCapCover (e : Event) {
@@ -126,42 +143,38 @@ import { create } from 'node_modules/axios/index.cjs'
     }
     async function handleCreateCap () {
         try{
-            //Cria o manga
+            const realIdAct = allActs.value.find((act: actionCardProps) => act.actNumber === createIdAct.value)
+
             let datas = new FormData()
-            datas.append('data', JSON.stringify({
-                idMangaPicture: createIdCap.value
-            }))
-            createCapPages.value.forEach((file: File) => {
-                datas.append('files.pictures', file);
-            }); 
             
-            let res = await api.post(`/manga-pictures`,datas,{
-                headers : {
-                    Authorization : `Bearer ${jwt}`,
-                    'Content-Type': 'multipart/form-data',
-                }
-            })
-            const mangaToCap = res.data.data.id
-            //Pega o id verdadeiro do ato
-            const { data } = await api.get(`/act-covers/?populate=*`)
-            //Cria a capa do capitulo
+            datas.append('capCoverNumber', String(createIdCap.value));
+            datas.append('actCover', String(realIdAct?.actCover_id));
+            datas.append('capCoverTitle', String(capCoverTitle.value))
+            datas.append('description', String(capDescription.value))
+
+            datas.append('capCoverPicture', createCapCover.value)
+
+            let res = await createNewCapCover(datas)
+            const realId = res?.capCover_id
+            console.log(`res`, res)
+            console.log(`realId`, realId)            
             datas = new FormData()
-            datas.append(`data`,JSON.stringify({
-                idCapCover: createIdCap.value,
-                manga_pictures : mangaToCap,
-                act_cover : data.data.filter((ea : actionCardProps) => ea.idCover === createIdAct.value)[0].id
-            }))
+            datas.append('capCover_id', String(realId))
 
-            datas.append('files.capCover', createCapCover.value) // Adiciona o arquivo
+            // NAO E ASSIM AINIDA FE
+            datas.append('pages', createCapPages.value)
 
-            res = await api.post(`/cap-covers`,datas,{
-                headers : {
-                    Authorization : `Bearer ${jwt}`,
-                }
-            })
-            if(res.status === 200){
+            // createCapPages.value.forEach((file: File) => {
+            //     datas.append('pages', file);
+            // }); 
+            
+            res = await createNewMangaPictures(datas)
+            
+            if(res.status === 201){
                 window.location.reload()
             }
+            
+            
         }catch(e){
             console.log(`Error ao criar um capitulo ${e}`)
         }
@@ -169,10 +182,11 @@ import { create } from 'node_modules/axios/index.cjs'
     
     onMounted(async () => {
         try{
-            const { data } = await api.get(`/act-covers?populate=*`)
-            allActs.value = data.data.filter((ea : actionCardProps) => ea.isReady)
-            const res = await api.get(`/cap-covers?populate=*`)
-            allCap.value = res.data.data
+            const response = await getAllActs()
+            allActs.value = response.filter((ea : actionCardProps) => ea.isReady)
+            const res = await getAllCaps()
+            console.log({res})
+            allCap.value = res.data
         }catch(e){  
             console.log(`Error ao tentar pegar todos os atos ${e}`)
         }
@@ -222,6 +236,10 @@ import { create } from 'node_modules/axios/index.cjs'
             <template v-slot:text>
                 <h2 class="orange">Criar um novo capítulo</h2>
                 <form class="createForm" @submit.prevent="handleCreateCap">
+                    <label for="capCoverTitle">Titulo</label>
+                    <input type="text" required @change="handleTitle">
+                    <label for="capDescription">Descricao</label>
+                    <input type="text" required @change="handleDescription">
                     <label for="idCap">Id do capítulo:</label>
                     <input type="text" required @change="handleIdCap">
                     <label for="idAct">Id do ato:</label>
@@ -248,25 +266,27 @@ import { create } from 'node_modules/axios/index.cjs'
         </span>
         <p v-if="loading">Carregando ...</p>
         <div class="actContainer" v-else>
-                <div class="rowInfoContainer" v-for="(actObj) of allActs" :key="actObj?.idCover">
+                <div class="rowInfoContainer" v-for="(actObj) of allActs" :key="actObj?.actCover_id">
                     <div class="cardContainer">
                         <ActionToUse
-                        :key="actObj?.idCover" 
-                        :url="actObj?.actCover !== null ? actObj?.actCover?.url : ''"
+                        :key="actObj?.actCover_id" 
                         :actDetails="actObj?.actDetails"
                         :isReady="actObj?.isReady"
-                        :idCover="actObj?.idCover"
-                        :handleDelete="handleDeleteAct"
+                        :actCover_id="actObj?.actCover_id"
+                        :actCoverPicture="actObj?.actCoverPicture"
+                        :actNumber="actObj?.actNumber"
                         />
                     </div>
                     <div class="capListContainer">
-                        <template v-for="(cap) in allCap" :key="cap.idCapCover" >
-                            <CapCard v-if="cap.act_cover?.idCover === actObj?.idCover"
-                            :url="cap.capCover.url" 
-                            :idCapCover="cap.idCapCover" 
-                            :isRouter="false"
-                            :forAdmin="true"
-                            :key="cap.idCapCover"
+                        <template v-for="(cap) in allCap" :key="cap.capCover_id" >
+                            <CapCard 
+                                v-if="cap.actCover?.actCover_id === actObj?.actCover_id"
+                                :key="cap.capCover_id"
+                                :url="cap.capCoverPicture" 
+                                :idCapCover="cap.capCover_id"     
+                                :capCoverNumber="cap.capCoverNumber" 
+                                :isRouter="false"
+                                :forAdmin="true"
                             />
                         </template>
                     </div>
