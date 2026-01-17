@@ -22,3 +22,12 @@ export async function createNewMangaPictures (datas : FormData) {
         console.error(`Error ao tentar criar mangapictures: ${e}`)
     }
 }
+
+export async function deleteMangaPicture(id: number) {
+    try{
+        const res = await api.delete(`/manga-picture/${id}`)
+        return res.data;
+    } catch (e) {
+        console.log(`Error ao deletar mangaPicture: ${e}`)
+    }
+}

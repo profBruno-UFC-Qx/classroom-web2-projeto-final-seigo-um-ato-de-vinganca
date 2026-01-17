@@ -4,11 +4,14 @@ import { RouterLink } from 'vue-router'
 import CustomModal from './CustomModal.vue';
 import { BASE_URL, api } from '@/api'
 import { useUserStore } from '@/stores/userStore';
+import { deleteCap, getCapCoverById, updateCap } from '@/api/services/capServices';
 import type { actionCardProps } from '@/types';
+import { deleteMangaPicture, getMangaPicturesByCapCoverId } from '@/api/services/mangaPicturesServices';
 interface CapCardProps  {
     url:string
     idCapCover : number
     capCoverNumber : number
+    description?: string
     isRouter ?: boolean
     forAdmin ?: boolean
 }
@@ -17,28 +20,24 @@ const { jwt } = user
 const isOpenModalForUpdate = ref<boolean>(false)
 const isOpenModalForDelete = ref<boolean>(false)
 const novaCapa = ref()
-const newNumber = ref<string>('')
+const newNumber = ref<number>()
 const props = defineProps<CapCardProps>()
 
 function handleIsOpenModalForUpdate () {
     isOpenModalForUpdate.value = !isOpenModalForUpdate.value
 }
 async function handleUpdate () {
-    if(newNumber.value === '') newNumber.value = props.idCapCover
+    if(newNumber.value === null) newNumber.value = props.idCapCover
     try{
         const datas = new FormData()
-        datas.append('data', JSON.stringify({
-            idCapCover: newNumber.value
-        }))
-        datas.append('files.capCover', novaCapa.value) // Adiciona o arquivo
-        const {data} = await api.get(`/cap-covers/?populate=*`)
-        const realId = data.data.filter((ea : CapCardProps) => ea.idCapCover === props.idCapCover)[0].id
-        const res = await api.put(`/cap-covers/${realId}`,datas, {
-            headers: {
-                Authorization : `Bearer ${jwt}`
-            }
-        })
-        if(res.status === 200){
+        datas.append('capCoverNumber', String(newNumber.value))
+        if(props.description){
+            datas.append('description', String(props.description))
+        }
+        datas.append('capCoverPicture', novaCapa.value)
+
+        const res = await updateCap(props.idCapCover, datas)
+        if(res?.status === 201){
             window.location.reload()
         }
     }catch(e){
@@ -48,7 +47,7 @@ async function handleUpdate () {
 function handleDetails(e : Event){
     const input = e.target as HTMLInputElement;
     if (input.value) {
-        newNumber.value = input.value;
+        newNumber.value = Number(input.value);
     }
 }
 function handleFile(e : Event){
@@ -61,26 +60,17 @@ function handleOpenModalForDelete () {
     isOpenModalForDelete.value = !isOpenModalForDelete.value
 }
 async function handleDeleteCap () {
-    try{ 
-        //tenho que apagar o cap cover e o mangaPictures.
-        const { data } = await api.get(`/cap-covers/?populate=*`)
-        const realObj = data.data.filter((ea : actionCardProps) => ea.idCapCover === props.idCapCover)[0]
-        const mangaId = realObj.manga_pictures[0].id
-        const capId = realObj.id
-        const resManga = await api.delete(`/manga-pictures/${mangaId}`, {
-                headers : {
-                    Authorization : `Bearer ${jwt}`
-                }
-            })
-        const resCap = await api.delete(`/cap-covers/${capId}`, {
-                headers : {
-                    Authorization : `Bearer ${jwt}`
-                }
-            })
-        if(resManga.status === 200 && resCap.status === 200){
+    try{
+        const manga_picture = await getMangaPicturesByCapCoverId(props.idCapCover)
+        const manga_picture_id = manga_picture?.mangaPicture_id
+
+        const cap_delete = await deleteCap(props.idCapCover)
+        const manga_picture_delete = await deleteMangaPicture(manga_picture_id)
+
+        if(cap_delete && manga_picture_delete.success === true){
             window.location.reload()
         }
-    }catch(e){
+    } catch (e){
         console.log(`Error ao deletar o capitulo ${e}`)
     }
 }

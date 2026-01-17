@@ -12,7 +12,8 @@ export const createCapCoverSchema = z.object({
 }).openapi("CreateCapCoverRequest");
 
 export const updateCapCoverSchema = z.object({
-  capCoverTitle: z.string().min(1, "Título (capCover) é obrigatório").openapi({ example: "One Piece" }),
+  capCoverNumber: z.coerce.number().int().positive().optional(),
+  capCoverTitle: z.string().min(1).optional().openapi({ example: "One Piece" }),
   description: z.string().optional().openapi({ example: "O rei dos piratas..." }),
 })
 
