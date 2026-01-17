@@ -15,16 +15,10 @@ onMounted( async () => {
     const route = useRoute();
     const id = route.params.id;
     try{
-        // const { data } = await api.get(`/act-covers?populate=*`)
         const res = await getActById(Number(id));
-        actObj.value = res
         const resCaps = await getCapCoversByActCoverId(Number(id))
+        actObj.value = res
         allCaps.value = resCaps
-        // const obj = data.data.filter((ea : actionCardProps) => ea.capCover_id === id)[0]
-        // const resAct = await api.get(`/act-covers/${obj.id}?populate=*`) 
-        // const resCap  = await api.get(`/cap-covers?populate=*`)
-        // actObj.value = resAct.data.data
-        // allCaps.value = resCap.data.data.filter((each : capCardProps) => each.act_cover?.idCover === id)
     }catch(e){
         console.log(e)
     }
@@ -56,7 +50,7 @@ onMounted( async () => {
                 <h1>{{ actObj.actDetails }}</h1>
                  <div class="allCapsContainer">
                      <CapCard v-for="(cap) in allCaps" 
-                     :url="cap.capCoverPicture" 
+                     :capCoverPicture="cap.capCoverPicture" 
                      :idCapCover="cap.capCover_id" 
                      :capCoverNumber="cap.capCoverNumber"
                      :key="cap.capCover_id" 

@@ -67,3 +67,24 @@ registry.registerPath({
     },
   },
 });
+
+registry.registerPath({
+  method: "get",
+  path: "/favorites/cap-covers/{id}",
+  tags: ["Favorite"],
+  summary: "Obter favoritos pelo usuario e capCover_id",
+  security: [{ bearerAuth: [] }],
+  request: {
+    params : z.object({
+      id : z.coerce.number()
+    })
+  },
+  responses: {
+    200: {
+      description: "Favoritos obtidos com sucesso",
+      content: {
+        "application/json": { schema: z.array(favoriteResponseSchema) },
+      },
+    },
+  },
+});

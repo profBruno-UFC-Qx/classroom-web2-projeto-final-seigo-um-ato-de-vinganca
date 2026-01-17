@@ -11,18 +11,17 @@ export class Comment {
     text!: string;
     
     // Relacoes 
-    @ManyToOne(() => User, (user) => user.user_id, {
+    @ManyToOne(() => User, (user) => user.comments, {
         nullable: false,
         onDelete: "CASCADE",
     })
     @JoinColumn({ name: "user_id" })
     user!: User;
 
-    @ManyToOne(() => CapCover, (capCover) => capCover.capCover_id, {
+    @ManyToOne(() => CapCover, (capCover) => capCover.comments, {
         nullable: false,
         onDelete: "CASCADE",
     })
     @JoinColumn({ name: "capCover_id" })
     capCover!: CapCover;
-  user_id: any;
 }

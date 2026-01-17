@@ -41,13 +41,10 @@ export type capCoverProps = {
 }
 
 export type CommentFormatResponse = {
-    user : User
-    text : string
-    id : number
-    cap_cover : {
-        id : number
-        idCapCover : string
-    }
+    comment_id : number,
+    text : string,
+    user : User,
+    capCover : capCoverProps, // TALVEZ VOLTAR PARA VER ISSO DAQUI
 }
 
 export type FavoritesFormatResponse = {

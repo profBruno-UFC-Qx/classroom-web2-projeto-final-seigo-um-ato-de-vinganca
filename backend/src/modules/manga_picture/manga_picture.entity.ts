@@ -12,7 +12,7 @@ export class MangaPicture {
   pictures!: string[];
   
   //Relacoes
-  @OneToOne(() => CapCover, (capCover) => capCover.capCover_id, {
+  @OneToOne(() => CapCover, (capCover) => capCover.mangaPictures, {
     nullable: false,
     onDelete: "CASCADE",
   })

@@ -21,6 +21,8 @@ export class NotasRepository {
       .where("nota.capCover_id = :capCover_id", { capCover_id })
       .getRawOne();
 
+    if(average.avg === null) return null 
+    
     return average ? parseFloat(average.avg.toFixed(2)) : null;
   }
 

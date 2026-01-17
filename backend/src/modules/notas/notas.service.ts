@@ -44,7 +44,7 @@ export class NotasService {
     const nota = await this.notasRepository.getMediaFromRepository(capCover_id);
 
     if (!nota) {
-      throw new Error("Nota não encontrada.");
+      return 0
     }
 
     return nota;

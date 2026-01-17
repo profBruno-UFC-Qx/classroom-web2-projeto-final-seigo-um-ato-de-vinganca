@@ -12,9 +12,7 @@ api.interceptors.request.use((config) => {
     if (jwt.length > 0) {
         config.headers.Authorization = `Bearer ${jwt}`
     }
-
     return config
-
 }, (error) => {
     return Promise.reject(error)
 })
