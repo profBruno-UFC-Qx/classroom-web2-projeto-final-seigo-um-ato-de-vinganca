@@ -156,17 +156,22 @@ import { createNewMangaPictures } from '@/api/services/mangaPicturesServices'
 
             let res = await createNewCapCover(datas)
             const realId = res?.capCover_id
+
             console.log(`res`, res)
             console.log(`realId`, realId)            
             datas = new FormData()
+        
             datas.append('capCover_id', String(realId))
 
-            // NAO E ASSIM AINIDA FE
-            datas.append('pages', createCapPages.value)
+            if (createCapPages.value) {
+                const files = Array.isArray(createCapPages.value) 
+                    ? createCapPages.value 
+                    : Array.from(createCapPages.value);
 
-            // createCapPages.value.forEach((file: File) => {
-            //     datas.append('pages', file);
-            // }); 
+                files.forEach((file: any) => {
+                    datas.append('pages', file);
+                });
+            }
             
             res = await createNewMangaPictures(datas)
             
@@ -282,7 +287,8 @@ import { createNewMangaPictures } from '@/api/services/mangaPicturesServices'
                             <CapCard 
                                 v-if="cap.actCover?.actCover_id === actObj?.actCover_id"
                                 :key="cap.capCover_id"
-                                :capCoverPicture="cap.capCoverPicture" 
+                                :url="cap.capCoverPicture" 
+                                :description="cap.description"
                                 :idCapCover="cap.capCover_id"     
                                 :capCoverNumber="cap.capCoverNumber" 
                                 :isRouter="false"
