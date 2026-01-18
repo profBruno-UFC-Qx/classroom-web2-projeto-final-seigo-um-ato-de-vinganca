@@ -8,20 +8,6 @@ export class FavoriteService {
     this.favoriteRepository = new FavoriteRepository();
   }
     async addFavorite(favoriteData: Partial<Favorite>): Promise<Favorite> {
-        let existingFavorite = await this.favoriteRepository.findByCapCoverIdAndUserId(
-            favoriteData.capCover?.capCover_id!,
-            favoriteData.user?.user_id!
-        );
-
-        if (existingFavorite) {
-            existingFavorite = {
-                ...existingFavorite,
-                ...favoriteData,
-
-            }
-            return await this.favoriteRepository.update(existingFavorite);
-        }
-
         return await this.favoriteRepository.create(favoriteData);
     }
     async getUserFavorites(userId: number): Promise<Favorite[]> {

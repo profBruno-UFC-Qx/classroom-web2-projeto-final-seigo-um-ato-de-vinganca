@@ -55,7 +55,7 @@ export function saveMagaPictures(capCover_id : number , files : File[]): string[
 }
 
 
-export function deleteMangaPictures(capCover_id : number){
+export function deleteMangaPicturesArchives(capCover_id : number){
   const FOLDER_DIR = path.resolve(UPLOAD_DIR, `capCover_${capCover_id}`)
   
   if(!FOLDER_DIR.startsWith(UPLOAD_DIR)) return 

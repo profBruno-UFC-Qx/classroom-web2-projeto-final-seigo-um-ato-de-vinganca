@@ -46,7 +46,7 @@ export class CapCover {
   @JoinColumn({ name: "actCover_id" })
   actCover!: ActCover;
 
-  @OneToOne(() => MangaPicture, (mangaPicture) => mangaPicture.capCover)
+  @OneToOne(() => MangaPicture, (mangaPicture) => mangaPicture.capCover, {onDelete: "CASCADE"})
   mangaPictures!: MangaPicture;
   
 }

@@ -10,7 +10,7 @@ const commentController = new CommentController();
 router.post('/comments', authMiddleware(), validate(commentCreateSchema), commentController.createComment);
 router.put('/comments/:id', authMiddleware(), validate(commentUpdateSchema), commentController.updateComment);
 router.get('/comments/:idCapCover', commentController.getCommentsByIdCapCover);
-router.delete('/comments/:id', authMiddleware(), commentController.deleteComment);
+router.delete('/comments/:id', authMiddleware(["admin"]), commentController.deleteComment);
 
 export { router as CommentRoutes };
 

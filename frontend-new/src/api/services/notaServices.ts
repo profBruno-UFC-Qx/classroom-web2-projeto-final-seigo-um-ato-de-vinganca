@@ -12,11 +12,14 @@ export const getMediaNotas = async (capCover_id : number) => {
 
 export const createAndUpdateNota = async (capCover_id : number, nota : number) => {
     try{
-        await api.post(`/notas`, {
+        const res = await api.post(`/notas`, {
             capCover : capCover_id,
             nota : nota
         })
+        if(res.status === 201) return true
+
     }catch(e){
         console.log(`Error ao criar ou atualizar nota: ${e}`)
+        return false
     }
 }

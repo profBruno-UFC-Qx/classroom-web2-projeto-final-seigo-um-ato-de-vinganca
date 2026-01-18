@@ -43,7 +43,7 @@ export class CommentController {
 
     async deleteComment(req: Request, res: Response) {
         try {
-            const { id } = req.body;
+            const id = Number(req.params.id);
             const result = await commentService.deleteComment(id);
             return res.status(200).json(result);
             return res.status(200).json({ success: true, message: `Comment with ID ${id} deleted.` });

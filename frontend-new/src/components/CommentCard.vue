@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
+// import { defineProps } from 'vue'
 import { api } from '@/api';
-import { useUserStore } from '@/stores/userStore';
+import { useUserStore } from '@/stores/userStore'
+import { deleteComment } from '@/api/services/commentsService';
 
 interface CommentProps {
     user: string
@@ -13,28 +14,22 @@ const { jwt } = userStore
 const role = userStore.role
 const props = defineProps<CommentProps>()
 
-async function deleteComment () {
+async function handleDeleteComment () {
     const id = props.id
-    try {
-        const res = await api.delete(`/comentarios/${id}`,{
-            headers : {
-                Authorization : `Bearer ${jwt}`
-            }
-        })
-        if(res.status === 200) window.location.reload()
-    }catch(e){  
-        console.log(`Error ao apagar comentario ${e}`)
+    const success = await deleteComment(Number(id))
+    if(success){
+        window.location.reload()
     }
 }
 
 </script>
 
 <template>
-    <div class="comentario" v-if="role === `Admin`">
+    <div class="comentario" v-if="role === `admin`">
         <div class="infosAdmin">
             <h3>{{ user }}</h3>
             <p>{{ comment }}</p>
-            <button class="deleteButton" @click="deleteComment">
+            <button class="deleteButton" @click="handleDeleteComment">
                 Apagar
             </button>
         </div>

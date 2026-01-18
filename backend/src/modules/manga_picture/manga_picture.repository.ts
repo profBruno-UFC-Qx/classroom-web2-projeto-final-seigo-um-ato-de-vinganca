@@ -1,5 +1,5 @@
 import { AppDataSource } from "../../config/data-source";
-import { deleteMangaPictures } from "../../utils/file";
+import {  deleteMangaPicturesArchives } from "../../utils/file";
 import { MangaPicture } from "./manga_picture.entity";
 import { Repository } from "typeorm";
 
@@ -38,7 +38,7 @@ export class MangaPictureRepository {
     console.log(mangaPicture)
     await this.repo.delete({ mangaPicture_id: mangaPictureId });
     if (mangaPicture !== null) {
-      deleteMangaPictures(mangaPicture.capCover.capCover_id)
+      deleteMangaPicturesArchives(mangaPicture.capCover.capCover_id)
     }
     return {success: true, message: "Manga Picture deletado com sucesso."};
   }

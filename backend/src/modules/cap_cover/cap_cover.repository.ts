@@ -1,4 +1,5 @@
 import { AppDataSource } from "../../config/data-source";
+import { deleteMangaPicturesArchives } from "../../utils/file";
 import { CapCover } from "./cap_cover.entity";
 import { Repository, Like, Equal } from "typeorm";
 
@@ -74,6 +75,7 @@ export class CapCoverRepository {
 
   async delete(capCover_id: number): Promise<{success: boolean, message: string}> {
     const res =  await this.repo.delete({ capCover_id });
+    deleteMangaPicturesArchives(capCover_id)
     return {success: true, message: "CapCover deletado com sucesso."};
   }
 }

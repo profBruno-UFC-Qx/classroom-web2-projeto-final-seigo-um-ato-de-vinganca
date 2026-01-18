@@ -61,13 +61,9 @@ function handleOpenModalForDelete () {
 }
 async function handleDeleteCap () {
     try{
-        const manga_picture = await getMangaPicturesByCapCoverId(props.idCapCover)
-        const manga_picture_id = manga_picture?.mangaPicture_id
-
         const cap_delete = await deleteCap(props.idCapCover)
-        const manga_picture_delete = await deleteMangaPicture(manga_picture_id)
 
-        if(cap_delete && manga_picture_delete.success === true){
+        if(cap_delete){
             window.location.reload()
         }
     } catch (e){

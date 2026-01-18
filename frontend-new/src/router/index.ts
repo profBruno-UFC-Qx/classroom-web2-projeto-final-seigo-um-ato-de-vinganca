@@ -37,7 +37,7 @@ const router = createRouter({
       path: '/admin',
       component: AdminPage,
       meta: {
-        requiresAuth: true
+        requireAdmin: true
       }
     },
     { 
@@ -46,7 +46,10 @@ const router = createRouter({
     },
     {
       path : '/profile/:id',
-      component: ProfilePage
+      component: ProfilePage,
+      meta: {
+        requireAuth: true
+      }
     }
   ]
 })
@@ -55,6 +58,13 @@ router.beforeEach((to) => {
   const userStore = useUserStore()
   if(to.meta.requiresAuth && !userStore.isAuthenticated) {
     return '/login'
+  }
+})
+
+router.beforeEach((to) => {
+  const userStore = useUserStore()
+  if(to.meta.requireAdmin && userStore?.role !== 'admin') {
+    return '/'
   }
 })
 

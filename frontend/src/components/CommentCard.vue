@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
 import { api } from '@/api';
 import { useUserStore } from '@/stores/userStore';
 
@@ -27,10 +26,12 @@ async function deleteComment () {
     }
 }
 
+console.log({jwt})
+
 </script>
 
 <template>
-    <div class="comentario" v-if="role === `Admin`">
+    <div class="comentario" v-if="role === `admin`">
         <div class="infosAdmin">
             <h3>{{ user }}</h3>
             <p>{{ comment }}</p>

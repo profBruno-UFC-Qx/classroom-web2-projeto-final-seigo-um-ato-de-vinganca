@@ -72,7 +72,7 @@ onMounted( async () => {
         const notas = await getMediaNotas(Number(id))
         if(jwt){
             const fav = await getFavByCapCoverId(Number(id))
-            isFav.value = fav.isFavorite
+            isFav.value = fav?.isFavorite
         }
         capInf.value = {
             capCoverNumber : res.capCoverNumber,
@@ -107,8 +107,8 @@ function handleTextChange(event : Event) : void {
 
 async function handleCreateComment(){
     try{
-        await createComment(Number(id), textAreaInput.value)
-        window.location.reload()
+        const res = await createComment(Number(id), textAreaInput.value)
+        if (res) window.location.reload()
     } catch(e){
         console.log(`Error ao criar comentario ${e}`)
     }
@@ -156,8 +156,8 @@ async function downloadZip() {
 async function Avaliation (e : Event) {
     let input = e.target as HTMLInputElement
     try {
-        await createAndUpdateNota(Number(id), Number(input.value))
-        window.location.reload()
+        const res = await createAndUpdateNota(Number(id), Number(input.value))
+        if(res) window.location.reload()
     }catch(e){
         console.log(e)
     }
@@ -215,7 +215,13 @@ function Choose() {
         </div>
         <div v-else class="fullSize">
             <div class="capContainer">
-                <CapCard :capCoverPicture="capInf.capCoverPicture" :idCapCover="capInf?.capCover_id" :capCoverNumber="capInf.capCoverNumber" :isRouter="false"/>
+                <CapCard
+                    :capCoverPicture="capInf.capCoverPicture" 
+                    :idCapCover="capInf?.capCover_id" 
+                    :description="capInf?.description"
+                    :capCoverNumber="capInf.capCoverNumber" 
+                    :isRouter="false"
+                />
             </div>
             <div class="restPage">
                 <h1 class="ler" @click="Choose" v-if="pictures !== null">Ler mangá</h1>

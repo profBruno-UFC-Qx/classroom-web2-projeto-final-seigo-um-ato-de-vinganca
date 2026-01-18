@@ -57,26 +57,12 @@ import { createNewMangaPictures } from '@/api/services/mangaPicturesServices'
     async function handleCreateAct() {
         try{
             const datas = new FormData()
-            // datas.append('data', JSON.stringify({
-            //     idCover: createIdCover.value,
-            //     actDetails: createActDetails.value,
-            //     isReady: createIsReady.value
-            // }))
+
             datas.append("actNumber", createIdCover.value)
             datas.append("actDetails", createActDetails.value)
             datas.append("isReady", String(createIsReady.value))
             datas.append("actCoverPicture", createActCover.value)
             console.log(createActCover.value)
-
-            // datas.append('files.actCover', createActCover.value) // Adiciona o arquivo
-            // const res = await api.post('/act-covers',datas,{
-            //     headers : {
-            //         Authorization : `Bearer ${jwt}`
-            //     }
-            // })
-            // if(res.status === 200){
-            //     window.location.reload()
-            // }
 
             const res = await createAct(datas)
             if(res !== undefined) window.location.reload()
