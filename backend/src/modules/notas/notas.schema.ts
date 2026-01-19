@@ -20,4 +20,7 @@ export const notaUpdateSchema = z.object({
     nota: z.number().min(0).max(10).openapi({ example: 9.0 }),
 }).openapi("NotaUpdateRequest");
 
-export const notaMediaSchema = z.number().openapi("NotaMediaResponse");
+export const notaMediaSchema = z.object({
+  noda_id : z.number().openapi({ example: 0}),
+  nota: z.number().openapi({ example: 1 })
+}).openapi("NotaMediaResponse");
