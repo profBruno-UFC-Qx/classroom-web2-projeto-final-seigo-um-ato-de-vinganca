@@ -1,6 +1,6 @@
 <script setup lang="ts">
-    import { defineEmits } from 'vue'
     import { BASE_URL } from '@/api'
+    defineProps<CustomModalProps>()
 
     interface CustomModalProps {
         toSee ?: boolean
@@ -8,7 +8,7 @@
         url ?: string
 
     }
-    defineProps<CustomModalProps>()
+    
     const emit = defineEmits(['close','previous','next'])
     const closeModal = () : void => {
         emit('close')
@@ -131,9 +131,6 @@
     .renderImage{
         max-width: 100vw;
         max-height: 100vh;
-        /* width: 80%;
-        height: 90%;
-        max-height: 100%; */
     }
     .stepButton{
         all: unset;

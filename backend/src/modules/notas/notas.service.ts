@@ -49,4 +49,10 @@ export class NotasService {
 
     return nota;
   }
+
+  async getNotaByUserAndCap(capCover_id : number, user_id : number): Promise<Nota | undefined> {
+    const res = await this.notasRepository.getCapCoverById(capCover_id)
+    const nota =  res.find(ea => ea.user.user_id === user_id)
+    return nota
+  }
 }

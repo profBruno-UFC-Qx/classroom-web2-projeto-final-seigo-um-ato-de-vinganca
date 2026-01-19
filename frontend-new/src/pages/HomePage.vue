@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import ActionCard from '@/components/ActionCard.vue'
-import { api } from '@/api';
 import { getAllActs } from '@/api/services/actServices';
 import type { actionCardProps } from '@/types';
+
 const covers = ref<actionCardProps[]>([])
 const loading = ref(true)
+
 onMounted( async () => {
     try{
         const res = await getAllActs()
@@ -16,6 +17,7 @@ onMounted( async () => {
         loading.value = false
     }
 })
+
 </script>
 
 <template>

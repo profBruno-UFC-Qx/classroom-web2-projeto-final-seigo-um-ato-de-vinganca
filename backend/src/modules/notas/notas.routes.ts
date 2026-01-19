@@ -9,6 +9,7 @@ const notasController = new NotasController();
 
 router.post("/notas", authMiddleware(), validate(notaCreateSchema), notasController.createNota);
 router.get("/notas/media/:id", notasController.getMediaNota);
+router.get("/notas/user/:capCover_id", authMiddleware(), notasController.getNotaByUserAndCapCoverId)
 
 
 export { router as notasRoutes };

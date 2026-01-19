@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { api } from '@/api';
 import type { actionCardProps, capCardProps } from '@/types'
 import ActionToUse from '@/components/ActionToUse.vue'
 import CapCard from '@/components/CapCard.vue'

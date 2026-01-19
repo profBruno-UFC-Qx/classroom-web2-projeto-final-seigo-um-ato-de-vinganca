@@ -4,9 +4,8 @@ import { RouterLink } from 'vue-router'
 import CustomModal from './CustomModal.vue';
 import { BASE_URL, api } from '@/api'
 import { useUserStore } from '@/stores/userStore';
-import { deleteCap, getCapCoverById, updateCap } from '@/api/services/capServices';
-import type { actionCardProps } from '@/types';
-import { deleteMangaPicture, getMangaPicturesByCapCoverId } from '@/api/services/mangaPicturesServices';
+import { deleteCap, updateCap } from '@/api/services/capServices';
+
 interface CapCardProps  {
     capCoverPicture : string
     idCapCover : number
@@ -16,7 +15,6 @@ interface CapCardProps  {
     forAdmin ?: boolean
 }
 const user = useUserStore()
-const { jwt } = user
 const isOpenModalForUpdate = ref<boolean>(false)
 const isOpenModalForDelete = ref<boolean>(false)
 const novaCapa = ref()

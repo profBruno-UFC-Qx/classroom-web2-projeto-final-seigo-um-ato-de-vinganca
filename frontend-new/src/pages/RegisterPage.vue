@@ -3,7 +3,6 @@
     import { useField, useForm } from 'vee-validate';
     import { toTypedSchema } from '@vee-validate/zod';
     import { useUserStore } from '@/stores/userStore';
-    import { api } from '@/api'
     import { registryUser } from '@/api/services/registerService';
     import router from '@/router'
     import * as zod from 'zod';

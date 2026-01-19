@@ -7,11 +7,10 @@ import type { CommentFormatResponse, FavoritesFormatResponse, Nota } from '@/typ
 import CapCard from '@/components/CapCard.vue'
 import CustomModal from '@/components/CustomModal.vue'
 import { useUserStore } from '@/stores/userStore'
-import type { capCardProps } from '@/types'
 import JSZip from 'jszip'
 import { getCapCoverById } from '@/api/services/capServices'
 import { createAndUpdateFav, getFavByCapCoverId } from '@/api/services/favoriteServices'
-import { createAndUpdateNota, getMediaNotas } from '@/api/services/notaServices'
+import { createAndUpdateNota, getMediaNotas, getNotaByCapCoverId } from '@/api/services/notaServices'
 import { createComment, getAllCommentsByCapCoverId } from '@/api/services/commentsService'
 
 interface capInfFormat {
@@ -21,55 +20,38 @@ interface capInfFormat {
     description : string,
     capCoverPicture : string
 }
-interface capInfFormatObject {
-    cap_cover : {
-        idCapCover : string
-        url : string
-    }
-    idCapCover : string
-    id : number
-}
 
 interface picturesFormat {
     mangaPicture_id : number
     images : string[]
 }
 
+const userStore = useUserStore();
+const jwt = userStore.jwt;
+
+const route = useRoute()
+const id = route.params.id
+
 const capInf = ref<capInfFormat>({} as capInfFormat)
-const actualPage = ref<number>(0)
+const comments = ref<CommentFormatResponse[]>([])
 const pictures = ref<picturesFormat | null>(null) 
+const actualPage = ref<number>(0)
 const load = ref(true)
 const openModal = ref(false)
 const openModalForCheck = ref(false)
-const userStore = useUserStore();
-const jwt = userStore.jwt;
-const textAreaInput = ref('')
-const route = useRoute()
-const id = route.params.id
-const comments = ref<CommentFormatResponse[]>([])
 const isFav = ref<boolean>(false)
 const notaCap = ref<number>(0)
-
-const showManga = () : void =>{
-    openModal.value = !openModal.value
-    openModalForCheck.value = false
-}   
-const previousPage = () : void => {
-    if(actualPage.value > 0){
-        actualPage.value--
-    }
-}
-const nextPage = () : void => {
-    if(pictures.value?.images && actualPage.value < pictures.value.images.length - 1){
-        actualPage.value++
-    }
-}
+const textAreaInput = ref('')
+const capNota = ref<number>(0)
 
 onMounted( async () => {
     try{
         const res = await getCapCoverById(Number(id))
         const comment = await getAllCommentsByCapCoverId(Number(id))
         const notas = await getMediaNotas(Number(id))
+        const userNota = await getNotaByCapCoverId(Number(id))
+
+
         if(jwt){
             const fav = await getFavByCapCoverId(Number(id))
             isFav.value = fav?.isFavorite
@@ -92,6 +74,7 @@ onMounted( async () => {
         }
         comments.value = comment
         notaCap.value = notas ? notas : 0
+        capNota.value = userNota ? userNota.nota : 0
 
     }catch(e){
         console.log(e)
@@ -99,12 +82,20 @@ onMounted( async () => {
         load.value = false
     }
 })
-
-function handleTextChange(event : Event) : void {
-    const target = event.target as HTMLTextAreaElement
-    textAreaInput.value = target.value
+const showManga = () : void =>{
+    openModal.value = !openModal.value
+    openModalForCheck.value = false
+}   
+const previousPage = () : void => {
+    if(actualPage.value > 0){
+        actualPage.value--
+    }
 }
-
+const nextPage = () : void => {
+    if(pictures.value?.images && actualPage.value < pictures.value.images.length - 1){
+        actualPage.value++
+    }
+}
 async function handleCreateComment(){
     try{
         const res = await createComment(Number(id), textAreaInput.value)
@@ -113,8 +104,6 @@ async function handleCreateComment(){
         console.log(`Error ao criar comentario ${e}`)
     }
 }
-
-
 async function updateFavorite(e : Event) {
     const input = e.target as HTMLInputElement
     const isActive = input.checked
@@ -125,7 +114,6 @@ async function updateFavorite(e : Event) {
         console.log(`error ao atualizar favorito ${e}`);
     }
 }
-
 async function downloadZip() {
     try {
         const zip = new JSZip();
@@ -152,7 +140,6 @@ async function downloadZip() {
         console.error(`Erro ao criar o ZIP: ${error}`);
     }
 }
-
 async function Avaliation (e : Event) {
     let input = e.target as HTMLInputElement
     try {
@@ -162,7 +149,6 @@ async function Avaliation (e : Event) {
         console.log(e)
     }
 }
-
 function ReinitManga () {
     actualPage.value = 0
     showManga()
@@ -233,12 +219,13 @@ function Choose() {
                     </span>
                     <span class="options">
                         <label for="nota">Avaliar</label>
-                        <select name="nota" id="nota" @change="Avaliation">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
+                        <select name="nota" id="nota" @change="Avaliation" v-model="capNota">
+                            <option :value="0">0</option>
+                            <option :value="1">1</option>
+                            <option :value="2">2</option>
+                            <option :value="3">3</option>
+                            <option :value="4">4</option>
+                            <option :value="5">5</option>
                         </select>
                         <h3 class="avaliation">Nota: {{ notaCap === 0 ? 'Sem notas 😭' : notaCap }}</h3>
                     </span>
@@ -248,7 +235,9 @@ function Choose() {
                             <button @click="handleCreateComment">Comentar</button>
                             <button @click="downloadZip">Fazer download do capítulo {{ id }}</button>
                         </div>
-                        <textarea @change="handleTextChange" name="comentario" id="comentario" maxlength="255"></textarea>
+                        <textarea 
+                        v-model="textAreaInput"
+                        name="comentario" id="comentario" maxlength="255"></textarea>
                         <div class="commentList">
                             <CommentCard v-for="(comment, index) in comments" 
                             :key="index"

@@ -8,7 +8,6 @@ import ActionToUse from '@/components/ActionToUse.vue'
 import CapCard from '@/components/CapCard.vue'
 import { createAct, getAllActs } from '@/api/services/actServices'
 import { createNewCapCover } from '@/api/services/capServices'
-import { create } from 'node_modules/axios/index.cjs'
 import { getAllCaps } from '@/api/services/capServices'
 import { createNewMangaPictures } from '@/api/services/mangaPicturesServices'
 

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-// import { defineProps } from 'vue'
-import { api } from '@/api';
 import { useUserStore } from '@/stores/userStore'
 import { deleteComment } from '@/api/services/commentsService';
 
@@ -10,7 +8,6 @@ interface CommentProps {
     id: number
 }
 const userStore = useUserStore()
-const { jwt } = userStore
 const role = userStore.role
 const props = defineProps<CommentProps>()
 

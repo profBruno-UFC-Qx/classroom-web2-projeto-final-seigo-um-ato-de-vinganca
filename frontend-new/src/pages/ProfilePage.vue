@@ -2,8 +2,6 @@
     import { useUserStore } from '@/stores/userStore';
     import { ref, onMounted } from 'vue';
     import CapCard from '@/components/CapCard.vue';
-    import type { capCardProps, FavoritesFormatResponse } from '@/types';
-    import { api } from '@/api'
     import { getFavByUser } from '@/api/services/favoriteServices';
 
     interface favFormat {
@@ -19,7 +17,6 @@
     }
 
     const useStore = useUserStore()
-    const { jwt } = useStore
     const allCap = ref<favFormat[]>()
 
     onMounted(async () => {

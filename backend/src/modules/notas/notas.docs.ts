@@ -71,3 +71,24 @@ registry.registerPath({
     },
   },
 });
+
+registry.registerPath({
+  method: "get",
+  path: "/notas/user/{capCover_id}",
+  tags: ["Notas"],
+  summary: "Obter a nota que o usuário já deu no capítulo",
+  security: [{ bearerAuth : []}],
+  request: {
+      params: z.object({
+        capCover_id: z.number().openapi({ example : 1})
+      })
+  },
+  responses: {
+    200: {
+      description: "Média da nota obtida com sucesso",
+      content: {
+        "application/json": { schema: notaMediaSchema },
+      },
+    },
+  },
+});

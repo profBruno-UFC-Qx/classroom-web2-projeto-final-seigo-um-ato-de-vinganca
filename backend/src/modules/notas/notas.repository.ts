@@ -33,4 +33,10 @@ export class NotasRepository {
   async update(nota: Nota): Promise<Nota> {
     return await this.repo.save(nota);
   }
+
+  async getCapCoverById(capCover_id: number){
+    return await this.repo.find({ where: { capCover :{ capCover_id } }, relations : {
+      user: true
+    } },)
+  }
 }

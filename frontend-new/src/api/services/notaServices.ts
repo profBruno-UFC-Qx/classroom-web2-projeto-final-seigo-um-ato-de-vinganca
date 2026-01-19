@@ -23,3 +23,13 @@ export const createAndUpdateNota = async (capCover_id : number, nota : number) =
         return false
     }
 }
+
+export const getNotaByCapCoverId = async (capCover_id: number) => {
+    try{
+        const res = await api.get(`notas/user/${capCover_id}`)
+        if(res.status === 200) return res.data
+    }catch(e){
+        console.log(`Error ao buscar nota do capítulo: ${e}`)
+    }
+
+}

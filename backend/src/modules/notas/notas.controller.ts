@@ -38,4 +38,15 @@ export class NotasController {
             return res.status(400).json({success: false, message: error.message});
         }
     }
+
+    async getNotaByUserAndCapCoverId(req: Request, res: Response){
+        try{
+            const capCover_id = parseInt(req.params.capCover_id, 10)
+            const userId = req.body.userId
+            const result = await notasService.getNotaByUserAndCap(capCover_id, userId)
+            return res.status(200).json({ nota_id: result?.nota_id, nota: result?.nota})
+        }catch(e: any){
+            return res.status(400).json({success: false, message: e.message})
+        }
+    }
 }

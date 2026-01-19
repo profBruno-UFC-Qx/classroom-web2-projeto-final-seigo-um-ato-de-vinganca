@@ -1,6 +1,5 @@
 <script setup lang="ts">
     import router from '@/router'
-    import { api } from '@/api'
     import { ref } from 'vue';
     import { RouterLink } from 'vue-router';
     import { useUserStore } from '@/stores/userStore';
