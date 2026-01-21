@@ -16,7 +16,7 @@ export async function createNewMangaPictures (datas : FormData) {
     try {
         const res = await api.post(`/manga-picture`, datas)
         if(res.status === 201){
-            return res.data
+            return res
         }
     }catch(e){
         console.error(`Error ao tentar criar mangapictures: ${e}`)

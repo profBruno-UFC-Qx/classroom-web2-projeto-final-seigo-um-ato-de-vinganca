@@ -71,6 +71,15 @@ export class CapCoverRepository {
   async findByCapCoverNumber(capCoverNumber: number): Promise<CapCover | null> {
     return await this.repo.findOneBy({ capCoverNumber });
   }
+  
+  async findByNumberAndAct(capCoverNumber: number, actCover_id: number): Promise<CapCover | null> {
+    return await this.repo.findOne({
+      where: { 
+        capCoverNumber: capCoverNumber,
+        actCover: { actCover_id: actCover_id }
+      }
+    });
+  }
 
   async delete(capCover_id: number): Promise<{success: boolean, message: string}> {
     try{

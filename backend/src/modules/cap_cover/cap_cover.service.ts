@@ -10,8 +10,11 @@ export class CapCoverService {
   }
 
   async create(data: any) {
-    const existing = await this.capCoverRepo.findByCapCoverNumber(data.capCoverNumber);
-    if (existing) throw new Error("CapCover com este capCoverNumber já existe");
+    const existing = await this.capCoverRepo.findByNumberAndAct(
+        data.capCoverNumber, 
+        data.actCover
+    );
+    if (existing) throw new Error("Capítulo com este número já existe nesse ato");
 
     return await this.capCoverRepo.create(data);
   }

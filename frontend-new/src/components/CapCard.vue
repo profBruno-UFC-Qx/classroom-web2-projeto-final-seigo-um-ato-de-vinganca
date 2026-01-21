@@ -20,6 +20,7 @@ const isOpenModalForDelete = ref<boolean>(false)
 const novaCapa = ref()
 const newNumber = ref<number>()
 const props = defineProps<CapCardProps>()
+console.log({props})
 
 function handleIsOpenModalForUpdate () {
     isOpenModalForUpdate.value = !isOpenModalForUpdate.value
@@ -87,10 +88,10 @@ async function handleDeleteCap () {
 
     <CustomModal v-if="isOpenModalForUpdate" @close="handleIsOpenModalForUpdate">
         <template v-slot:text>
-            <h2 class="orange">Atualizar dados do capítulo {{ idCapCover }}</h2>
+            <h2 class="orange">Atualizar dados do capítulo {{ capCoverNumber }}</h2>
             <form class="attForm" @submit.prevent="handleUpdate">
                 <label for="numero">Novo número do capítulo:</label>
-                <input type="text" :placeholder="'Número do capítulo ' + idCapCover " name="numero" id="numero" :value="idCapCover" :minlength="1" @change="handleDetails">
+                <input type="text" :placeholder="'Número do capítulo ' + capCoverNumber " name="numero" id="numero" :value="capCoverNumber" :minlength="1" @change="handleDetails">
                 <label for="capa">Nova capa:</label>
                 <input type="file" name="capa" id="capa" accept=".png" @change="handleFile">
                 <div class="buttonContainer">
@@ -106,13 +107,13 @@ async function handleDeleteCap () {
     </CustomModal>
     <div v-if="isRouter">
     <RouterLink :to="`/capDetails/${idCapCover}`" class="capContainer">
-        <img :src="BASE_URL + capCoverPicture" :alt="`Capa do capitulo ${idCapCover}`"> 
-        <h1>Capítulo {{ idCapCover }}</h1>
+        <img :src="BASE_URL + capCoverPicture" :alt="`Capa do capitulo ${capCoverNumber}`"> 
+        <h1>Capítulo {{ capCoverNumber }}</h1>
     </RouterLink>
     </div>
     <div v-else-if="forAdmin" class="imgContainer">
-        <img :src="BASE_URL + capCoverPicture" :alt="`Capa do capitulo ${idCapCover}`"> 
-        <h3>Capítulo {{ idCapCover }}</h3>
+        <img :src="BASE_URL + capCoverPicture" :alt="`Capa do capitulo ${capCoverNumber}`"> 
+        <h3>Capítulo {{ capCoverNumber }}</h3>
         <span class="rowContainer">
             <button @click="handleIsOpenModalForUpdate">🆙</button>
             <button @click="handleOpenModalForDelete">❌</button>
@@ -120,8 +121,8 @@ async function handleDeleteCap () {
     </div>
     <div v-else>
         <div class="capContainer" id="noRouter">
-            <img :src="BASE_URL + capCoverPicture" :alt="`Capa do capitulo ${idCapCover}`"> 
-            <h1>Capítulo {{ idCapCover }}</h1>
+            <img :src="BASE_URL + capCoverPicture" :alt="`Capa do capitulo ${capCoverNumber}`"> 
+            <h1>Capítulo {{ capCoverNumber }}</h1>
         </div>
     </div>
     

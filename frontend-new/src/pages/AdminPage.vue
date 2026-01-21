@@ -31,28 +31,27 @@ import { createNewMangaPictures } from '@/api/services/mangaPicturesServices'
     const createCapCover = ref()
     const createCapPages = ref()
 
-    function handleIdCover(e : Event){
-        const input = e.target as HTMLInputElement;
-        if (input.value) {
-            createIdCover.value = input.value;
-        }
-    }
-    function handleActDetails(e : Event){
-        const input = e.target as HTMLInputElement;
-        if (input.value) {
-            createActDetails.value = input.value;
-        }
-    }
-    function handleIsReady(e : Event){
-        const input = e.target as HTMLInputElement;
-        createIsReady.value = input.checked;
-    }
     function handleActCover(e: Event) {
         const input = e.target as HTMLInputElement
         if (input.files && input.files.length > 0) {
             createActCover.value = input.files[0]
         }
     }
+
+    function handleCapCover (e : Event) {
+        const input = e.target as HTMLInputElement;
+        if (input.files && input.files.length > 0) {
+            createCapCover.value = input.files[0];
+        }
+    }
+
+    function handleCapPages(e : Event){
+        const input = e.target as HTMLInputElement;
+        if (input.files && input.files.length > 0) {
+            createCapPages.value = input.files
+        }
+    }
+
     async function handleCreateAct() {
         try{
             const datas = new FormData()
@@ -90,42 +89,6 @@ import { createNewMangaPictures } from '@/api/services/mangaPicturesServices'
     }
     // Fim do delete no ato.
     //Inicio comandos para criar capítulo
-    function handleIdCap(e : Event){
-        const input = e.target as HTMLInputElement;
-        if (input.value) {
-            createIdCap.value = Number(input.value);
-        }
-    }
-    function handleIdAct (e : Event){
-        const input = e.target as HTMLInputElement;
-        if (input.value) {
-            createIdAct.value = Number(input.value);
-        }
-    }
-    function handleTitle(e : Event){
-        const input = e.target as HTMLInputElement;
-        if (input.value) {
-            capCoverTitle.value = input.value;
-        }
-    }
-    function handleDescription(e : Event){
-        const input = e.target as HTMLInputElement;
-        if (input.value) {
-            capDescription.value = input.value;
-        }
-    }
-    function handleCapCover (e : Event) {
-        const input = e.target as HTMLInputElement;
-        if (input.files) {
-            createCapCover.value = input.files[0];
-        }
-    }
-    function handleCapPages(e : Event){
-        const input = e.target as HTMLInputElement;
-        if (input.files) {
-            createCapPages.value = [... input.files]
-        }
-    }
     async function handleCreateCap () {
         try{
             const realIdAct = allActs.value.find((act: actionCardProps) => act.actNumber === createIdAct.value)
@@ -197,18 +160,23 @@ import { createNewMangaPictures } from '@/api/services/mangaPicturesServices'
             <template v-slot:text>
                 <h2 class="orange">Criar um novo ato</h2>
                 <form class="createForm" @submit.prevent="handleCreateAct">
-                    <label for="idCover">Id Cover:</label>
-                    <input type="text" required @change="handleIdCover">
+                    
+                    <label for="idCover">Número do ato:</label>
+                    <input type="text" id="idCover" required v-model="createIdCover">
+                    
                     <label for="actDetails">Detalhes do ato:</label>
-                    <input type="text" required @change="handleActDetails">
+                    <input type="text" id="actDetails" required v-model="createActDetails">
+                    
                     <span class="lineInput">
                         <label for="isReady">O ato está pronto ?</label>
-                        <input type="checkbox" name="isReady" id="isReady" @change="handleIsReady">
+                        <input type="checkbox" name="isReady" id="isReady" v-model="createIsReady">
                     </span>
+                    
                     <label for="actCover">Foto do ato:</label>
                     <input type="file" name="actCoverPicture" id="actCover" accept=".png" @change="handleActCover">
+                    
                     <div class="buttonContainer">
-                        <button class="button cancel" @click="()=>{isOpenModalToCreateNewAct = !isOpenModalToCreateNewAct}">
+                        <button class="button cancel" type="button" @click="()=>{isOpenModalToCreateNewAct = false}">
                             Cancelar
                         </button>
                         <button class="button confirm" type="submit">
@@ -226,20 +194,32 @@ import { createNewMangaPictures } from '@/api/services/mangaPicturesServices'
             <template v-slot:text>
                 <h2 class="orange">Criar um novo capítulo</h2>
                 <form class="createForm" @submit.prevent="handleCreateCap">
-                    <label for="capCoverTitle">Titulo</label>
-                    <input type="text" required @change="handleTitle">
-                    <label for="capDescription">Descricao</label>
-                    <input type="text" required @change="handleDescription">
-                    <label for="idCap">Id do capítulo:</label>
-                    <input type="text" required @change="handleIdCap">
-                    <label for="idAct">Id do ato:</label>
-                    <input type="text" id="idAct" required @change="handleIdAct">
+                    
+                    <label for="capCoverTitle">Titulo:</label>
+                    <input type="text" id="capCoverTitle" required v-model="capCoverTitle">
+                    
+                    <label for="capDescription">Descrição:</label>
+                    <input type="text" id="capDescription" required v-model="capDescription">
+                    
+                    <div class="row-inputs">
+                        <div class="input-group">
+                            <label for="idCap">Número do capítulo:</label>
+                            <input type="number" id="idCap" required v-model.number="createIdCap">
+                        </div>
+                        <div class="input-group">
+                            <label for="idAct">Número do ato:</label>
+                            <input type="number" id="idAct" required v-model.number="createIdAct">
+                        </div>
+                    </div>
+                    
                     <label for="capCover">Capa do capítulo:</label>
                     <input type="file" name="capCover" id="capCover" accept=".png" @change="handleCapCover">
+                    
                     <label for="capPage">Páginas do capítulo:</label>
                     <input type="file" name="capPage" id="capPage" multiple accept=".png" @change="handleCapPages">
+                    
                     <div class="buttonContainer">
-                        <button class="button cancel" @click="()=>{isOpenModalToCreateNewCap = !isOpenModalToCreateNewCap}">
+                        <button class="button cancel" type="button" @click="()=>{isOpenModalToCreateNewCap = false}">
                             Cancelar
                         </button>
                         <button class="button confirm" type="submit">
@@ -251,10 +231,12 @@ import { createNewMangaPictures } from '@/api/services/mangaPicturesServices'
         </CustomModal>
 
         <span v-if="!loading" class="buttonContainer">
-            <button class="addNew" @click="()=>{isOpenModalToCreateNewAct = !isOpenModalToCreateNewAct}">Adicionar novo ato</button>
-            <button class="addNew" @click="()=> {isOpenModalToCreateNewCap = !isOpenModalToCreateNewCap}">Adicionar novo capítulo</button>
+            <button class="addNew" @click="()=>{isOpenModalToCreateNewAct = true}">Adicionar novo ato</button>
+            <button class="addNew" @click="()=> {isOpenModalToCreateNewCap = true}">Adicionar novo capítulo</button>
         </span>
+        
         <p v-if="loading">Carregando ...</p>
+        
         <div class="actContainer" v-else>
                 <div class="rowInfoContainer" v-for="(actObj) of allActs" :key="actObj?.actCover_id">
                     <div class="cardContainer">
@@ -311,7 +293,10 @@ import { createNewMangaPictures } from '@/api/services/mangaPicturesServices'
         color: black;
         display: flex;
         flex-direction: column;
-        gap: 2em;
+        gap: 1em;
+        max-height: 70vh;
+        overflow-y: auto; 
+        padding-right: 0.5em;
         >label {
             color: black;
         }
@@ -322,6 +307,59 @@ import { createNewMangaPictures } from '@/api/services/mangaPicturesServices'
             border-radius: 1em;
             color: black;
         }
+    }
+    .createForm::-webkit-scrollbar {
+        width: 8px;
+    }
+    .createForm::-webkit-scrollbar-track {
+        background: #f1f1f1; 
+        border-radius: 4px;
+    }
+    .createForm::-webkit-scrollbar-thumb {
+        background: orange; 
+        border-radius: 4px;
+    }
+    .createForm > label {
+        color: black;
+        font-weight: bold;
+        font-size: 0.9em;
+        margin-bottom: -0.5em;
+    }
+    .createForm > input {
+        all: unset;
+        box-sizing: border-box;
+        width: 100%;
+        padding: 0.5em; 
+        border: 1px solid black;
+        border-radius: 0.5em; 
+        color: black;
+    }
+    .row-inputs {
+        display: flex;
+        gap: 1em;
+        width: 100%;
+    }
+
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        gap: 0.5em;
+        min-width: 0;
+        >label {
+            color: black;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+    }
+    .input-group > input {
+        all: unset;
+        box-sizing: border-box;
+        width: 100%;
+        padding: 0.5em;
+        border: 1px solid black;
+        border-radius: 0.5em;
+        color: black;
     }
     .orange{
         color: orange;
@@ -371,6 +409,7 @@ import { createNewMangaPictures } from '@/api/services/mangaPicturesServices'
         align-items: center;
         justify-content: space-around;
         color: black;
+        padding-bottom: 1em;
     }
     .button{
         all: unset;
