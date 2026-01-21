@@ -56,6 +56,9 @@ export class ActCoverController {
             const result = await actCoverService.deleteActCover(actCover_id, acCoverPicture);
             return res.status(200).json(result);
         } catch (error: any) {
+            if (error.message === "ActCover não encontrada.") {
+                return res.status(404).json({ success: false, message: error.message });
+            }
             return res.status(400).json({success: false, message: error.message});
         }
     }

@@ -45,8 +45,7 @@ export class CommentController {
         try {
             const id = Number(req.params.id);
             const result = await commentService.deleteComment(id);
-            return res.status(200).json(result);
-            return res.status(200).json({ success: true, message: `Comment with ID ${id} deleted.` });
+            if(result) return res.status(200).json({ success: true, message: `Comentario deletado com sucesso` });
         } catch (error: any) {
             return res.status(400).json({success: false, message: error.message});
         }

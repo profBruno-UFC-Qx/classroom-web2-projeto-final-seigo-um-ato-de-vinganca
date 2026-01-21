@@ -35,7 +35,8 @@ registry.registerPath({
       content: {
         "application/json": { schema: actCoverResponseSchema }
       }
-    }
+    },
+    400: { description: "Erro na requisição" }
   }
 })
 
@@ -75,6 +76,7 @@ registry.registerPath({
         "application/json": { schema: actCoverResponseSchema },
       },
     },
+    400: { description: "Erro na requisição" }
   },
 });
 
@@ -88,11 +90,6 @@ registry.registerPath({
     params: z.object({
       id: z.number().openapi({ example: 1 }),
     }),
-    body: {
-      content: {
-        "application/json": { schema: deleteActCoverScheme },
-      },
-    }
   },
   responses: {
     200: {
@@ -101,6 +98,9 @@ registry.registerPath({
         "application/json": { schema: actCoverResponseSchema },
       },
     },
+    401: { description: "Não autorizado" },
+    404: { description: "ActCover não encontrado"},
+    400: { description: "Erro na requisição" }
   },
 });
 
@@ -121,6 +121,7 @@ registry.registerPath({
         "application/json": { schema: actCoverResponseSchema },
       },
     },
+    400: { description: "Erro na requisição" }
   },
 });
 
@@ -136,5 +137,6 @@ registry.registerPath({
         "application/json": { schema: actCoverResponseSchema },
       },
     },
+    400: { description: "Erro na requisição" }
   },
 });

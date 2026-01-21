@@ -22,6 +22,7 @@ registry.registerPath({
           "application/json": { schema: favoriteResponseSchema },
         },
       },
+      401: { description: "Não autorizado" },
     },
 });
 
@@ -39,6 +40,7 @@ registry.registerPath({
         "application/json": { schema: z.array(favoriteResponseSchema) },
       },
     },
+    401: { description: "Não autorizado" },
   },
 });
 
@@ -65,6 +67,7 @@ registry.registerPath({
         "application/json": { schema: favoriteResponseSchema },
       },
     },
+    401: { description: "Não autorizado" },
   },
 });
 
@@ -86,5 +89,6 @@ registry.registerPath({
         "application/json": { schema: z.array(favoriteResponseSchema) },
       },
     },
+    401: { description: "Não autorizado" },
   },
 });

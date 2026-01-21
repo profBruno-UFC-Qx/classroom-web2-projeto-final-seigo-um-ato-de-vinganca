@@ -32,6 +32,7 @@ registry.registerPath({
         },
       },
     },
+    500: { description: "Erro na servidor" }
   },
 });
 
@@ -62,6 +63,7 @@ registry.registerPath({
         },
       },
     },
+    500: { description: "Erro na servidor" }
   },
 });
 
@@ -82,7 +84,8 @@ registry.registerPath({
         "application/json": { schema: CapCoverResponseSchema },
       },
     },
-    404: { description: "Capítulo não existe"}
+    404: { description: "Capítulo não existe"},
+    500: { description: "Erro na servidor" }
   },
 });
 
@@ -180,13 +183,14 @@ registry.registerPath({
     }),
   },
   responses: {
-    204: {
+    200: {
       description: "Capítulo deletado com sucesso",
       content: {
         "application/json": { schema: CapCoverResponseSchema },
       },
     },
     401: { description: "Não autorizado" },
-    404: { description: "Capítulo não existe"}
+    404: { description: "Capítulo não existe"},
+    400: { description: "Erro na requisição" }
   },
 });

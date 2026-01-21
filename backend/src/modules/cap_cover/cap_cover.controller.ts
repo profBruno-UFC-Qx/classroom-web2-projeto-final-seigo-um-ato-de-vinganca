@@ -68,9 +68,12 @@ export class CapCoverController {
     try {
       const capCover_id = parseInt(req.params.id, 10)
       const result = await capCoverService.delete(capCover_id)
-      return res.status(204).json(result)
+      return res.status(200).json(result)
     } catch (error: any) {
-      return res.status(400).json({message: error.message})
+        if (error.message === "Capítulo não encontrado") {
+          return res.status(404).json({ success: false, message: error.message });
+        }
+        return res.status(400).json({ success: false, message: error.message });
     }
   }
 

@@ -24,7 +24,6 @@ export class CapCoverRepository {
   async findAll(page: number, limit: number, search?: string) {
     const skip = (page - 1) * limit;
 
-    // Filtro
     const condition = search 
       ? { capCover: Like(`%${search}%`) }
       : {};
@@ -74,8 +73,23 @@ export class CapCoverRepository {
   }
 
   async delete(capCover_id: number): Promise<{success: boolean, message: string}> {
-    const res =  await this.repo.delete({ capCover_id });
-    deleteMangaPicturesArchives(capCover_id)
-    return {success: true, message: "CapCover deletado com sucesso."};
+    try{
+      const res =  await this.repo.delete({ capCover_id });
+      if (res.affected === 0) {
+        throw new Error("Capítulo não encontrado");
+      }
+      try {
+        deleteMangaPicturesArchives(capCover_id);
+      } catch (fileError) {
+        console.error("Erro ao deletar arquivos físicos:", fileError);
+      }
+    
+      return {success: true, message: "Capítulo deletado com sucesso."};
+    } catch(e: any) {
+      if (e.message === "Capítulo não encontrado") {
+        throw e;
+      }
+      throw new Error(`Não foi possível deletar o capítulo. Error: ${e.message}`);
+    }
   }
 }

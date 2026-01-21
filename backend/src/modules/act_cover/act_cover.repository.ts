@@ -31,6 +31,17 @@ export class ActCoverRepository {
   }
 
   async delete(actCover_id: number): Promise<void> {
-    await this.repo.delete(actCover_id);
+    try{
+      const res = await this.repo.delete(actCover_id);
+      if (res.affected === 0) {
+        throw new Error("ActCover não encontrado");
+      }
+
+    } catch(e: any) {
+      if (e.message === "ActCover não encontrado") {
+        throw e;
+      }
+      throw new Error(`Não foi possível deletar o ActCover. Error: ${e.message}`);
+    }
   }
 }

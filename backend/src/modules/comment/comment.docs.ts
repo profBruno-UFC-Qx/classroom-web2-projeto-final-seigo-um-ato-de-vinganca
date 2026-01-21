@@ -22,6 +22,8 @@ registry.registerPath({
                 "application/json": { schema: commentResponseSchema },
             },
         },
+        401: { description: "Não autorizado" },
+        400: { description: "Erro na requisição" }
     },
 });
 
@@ -48,6 +50,9 @@ registry.registerPath({
                 "application/json": { schema: commentResponseSchema },
             },
         },
+        401: { description: "Não autorizado" },
+        400: { description: "Erro na requisição" }
+
     },
 });
 
@@ -66,6 +71,8 @@ registry.registerPath({
         200: {
             description: "Comentario deletado com sucesso",
         },
+        401: { description: "Não autorizado" },
+        400: { description: "Erro na requisição" }
     },
 });
 
@@ -86,5 +93,6 @@ registry.registerPath({
                 "application/json": { schema: commentResponseSchema },
             },
         },
+        400: { description: "Erro na requisição" }
     },
 });
