@@ -66,10 +66,10 @@ package-lock.json
 ############################
 
 *.log
-*.sql
-*.sqlite
-*.sqlite3
-database.sqlite
+# *.sql
+# *.sqlite
+# *.sqlite3
+# database.sqlite
 
 ############################
 # Misc.
