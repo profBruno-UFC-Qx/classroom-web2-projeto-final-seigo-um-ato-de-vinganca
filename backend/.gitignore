@@ -117,4 +117,4 @@ build
 # Database
 ####################
 
-*.sqlite
+# *.sqlite
